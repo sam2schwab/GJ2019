@@ -4,6 +4,7 @@ using System.Linq;
 using UnityEngine;
 using System;
 
+[RequireComponent(typeof(AudioSource))]
 public class GameManager : MonoBehaviour
 {
     #region Singleton
