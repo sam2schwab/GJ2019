@@ -12,15 +12,21 @@ public class PlayerController : MonoBehaviour
     private bool _isAnchored = true;
     private float _rotationSpeed;
 
+    private Renderer[] renderers; //for ScreenWrapping
+    bool isWrappingX = false; //for ScreenWrapping
+    bool isWrappingY = false; //for ScreenWrapping
+
     // Use this for initialization
-	private void Start ()
-	{
-		_playerTransform = gameObject.transform;
-		UpdateRotation();
-	}
+    private void Start()
+    {
+        _playerTransform = gameObject.transform;
+        UpdateRotation();
+        renderers = GetComponentsInChildren<Renderer>(); //for ScreenWrapping
+    }
 	
 	// Update is called once per frame
 	private void Update () {
+
         if (Input.GetButtonDown("Jump"))
         {
 	        ToggleAnchor();
@@ -35,9 +41,10 @@ public class PlayerController : MonoBehaviour
         {
             _playerTransform.Translate(speed * Vector3.up * Time.deltaTime);
         }
-       
-    
-	}
+
+        ScreenWrap(); //for ScreenWrapping
+
+    }
 
 	private void ToggleAnchor()
 	{
@@ -84,4 +91,65 @@ public class PlayerController : MonoBehaviour
 	{
 		return Vector3.Distance(planet.gameObject.transform.position, _playerTransform.position) - planet.Size;
 	}
+
+    private bool CheckRenderers() //for ScreenWrapping
+    {
+        foreach (var Renderer in renderers)
+        {
+            if (Renderer.isVisible)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    void ScreenWrap() //for ScreenWrapping
+    {
+        var isVisible = CheckRenderers();
+        //Debug.Log("isVisible = " + isVisible);
+
+        if (isVisible)
+        {
+            isWrappingX = false;
+            isWrappingY = false;
+            return;
+        }
+
+        //Debug.Log("isWrappingX " + isWrappingX);
+        //Debug.Log("isWrappingy " + isWrappingY);
+
+        if (isWrappingX && isWrappingY)
+        {
+            return;
+        }
+
+        var cam = Camera.main;
+        var viewportPosition = cam.WorldToViewportPoint(transform.position);
+        var newPosition = transform.position;
+
+        //Debug.Log("viewPortPosition.x = " + viewportPosition.x);
+        //Debug.Log("viewPortPosition.y = " + viewportPosition.y);
+        //Debug.Log("Old Position =" + transform.position);
+
+        if (!isWrappingX && (viewportPosition.x > 1 || viewportPosition.x < 0))
+        {
+            newPosition.x = -newPosition.x;
+            Debug.Log("Now");
+
+            isWrappingX = true;
+        }
+
+        if (!isWrappingY && (viewportPosition.y > 1 || viewportPosition.y < 0))
+        {
+            newPosition.z = -newPosition.z;
+
+            isWrappingY = true;
+        }
+
+        transform.position = newPosition;
+        //Debug.Log("New Position = " + newPosition);
+    }
+
 }
