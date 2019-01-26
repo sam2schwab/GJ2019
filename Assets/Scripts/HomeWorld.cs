@@ -19,7 +19,7 @@ public class HomeWorld : MonoBehaviour
         GameObject o = gameObject;
         o.GetComponent<MeshFilter>().mesh = null;
         _planet = Instantiate(_prefabs[Rng.Next(_prefabs.Length)], transform);
-        _planet.transform.localScale = new Vector3(0.1f,0.1f,0.1f);
+        _planet.transform.localScale *= 0.1f;
     }
 
     private void Update()
