@@ -15,7 +15,15 @@ public class PlayerController : MonoBehaviour
     bool isWrappingX = false; //for ScreenWrapping
     bool isWrappingY = false; //for ScreenWrapping
 
-    //Collisions
+
+    //Shooting
+    public GameObject shot;
+    public Transform noseShotSpawn;
+    //public Transform wingShotSpawnL;
+    //public Transform wingShotSpawnR;
+    public float fireRate = 0.05f;
+    private float nextFire = 0.0f;
+    public AudioSource shotSound;
 
 
     // Use this for initialization
@@ -24,6 +32,7 @@ public class PlayerController : MonoBehaviour
         _playerTransform = gameObject.transform;
         UpdateRotation();
         renderers = GetComponentsInChildren<Renderer>(); //for ScreenWrapping
+        shotSound = GetComponent<AudioSource>();
     }
 	
 	// Update is called once per frame
@@ -44,12 +53,23 @@ public class PlayerController : MonoBehaviour
 
         ScreenWrap(); //for ScreenWrapping
 
+        //Shooting
+        if (Input.GetButton("Fire1") && Time.time > nextFire)
+        {
+            nextFire = Time.time + fireRate;
+            Instantiate(shot, noseShotSpawn.position, noseShotSpawn.rotation);
+            shotSound.Play();
+        }
     }
 
     void OnTriggerEnter(Collider other)
     {
-        Destroy(gameObject);
-        GameManager.Instance.PlayerCrash();
+        if(other.tag == "Planets")
+        {
+            Destroy(gameObject);
+            GameManager.Instance.PlayerCrash();
+        }
+        
     }
 
     private void TryToAnchor()

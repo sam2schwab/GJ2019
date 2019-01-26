@@ -20,6 +20,7 @@ public class GameManager : MonoBehaviour
 
     public AudioClip[] explosionClips;
     public AudioClip playerCrashClip;
+    public AudioClip enemyDeathClip;
     private AudioSource audioSource;
 
 
@@ -51,6 +52,8 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    #region Sound clips
+
     public void Explosion()
     {
         audioSource.clip = explosionClips[rng.Next(explosionClips.Length)];
@@ -63,4 +66,12 @@ public class GameManager : MonoBehaviour
         audioSource.clip = playerCrashClip;
         audioSource.Play();
     }
+
+    public void EnemyDeath()
+    {
+        audioSource.clip = enemyDeathClip;
+        audioSource.Play();
+    }
+
+    #endregion
 }
