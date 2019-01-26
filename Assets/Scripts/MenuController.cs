@@ -19,4 +19,14 @@ public class MenuController : MonoBehaviour {
     {
         SceneManager.LoadScene("main", LoadSceneMode.Single);
     }
+
+    public void QuitGame()
+    {
+        Application.Quit();
+    }
+
+    public void Credits()
+    {
+        SceneManager.LoadScene("Credits", LoadSceneMode.Single);
+    }
 }
