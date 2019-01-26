@@ -5,6 +5,11 @@ public class Asteroid : MonoBehaviour
 {
     private static GameObject[] _prefabs;
     private static readonly Random Rng = new Random();
+    private const int MaxRotationSpeed = 20;
+    
+    private GameObject _asteroid;
+    private Vector3 _eulers;
+
     private void Awake()
     {
         if (_prefabs == null)
@@ -16,7 +21,13 @@ public class Asteroid : MonoBehaviour
     {
         GameObject o = gameObject;
         o.GetComponent<MeshFilter>().mesh = null;
-        var asteroid = Instantiate(_prefabs[Rng.Next(_prefabs.Length)], transform);
-        asteroid.transform.localScale = new Vector3(0.2f,0.2f,0.2f);
+        _asteroid = Instantiate(_prefabs[Rng.Next(_prefabs.Length)], transform);
+        _asteroid.transform.localScale = new Vector3(0.2f,0.2f,0.2f);
+        _eulers = new Vector3((float) (Rng.NextDouble()*MaxRotationSpeed),(float) (Rng.NextDouble()*MaxRotationSpeed),(float) (Rng.NextDouble()*MaxRotationSpeed));
+    }
+
+    private void Update()
+    {
+        _asteroid.transform.Rotate(_eulers * Time.deltaTime);
     }
 }
