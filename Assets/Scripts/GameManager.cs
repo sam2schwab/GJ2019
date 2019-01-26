@@ -1,15 +1,23 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    public PlanetController[] planets;
+    #region Singleton
+
+    public static GameManager Instance;
+    
+    #endregion
+    
+    public List<PlanetController> planets;
 
     // Start is called before the first frame update
     private void Awake()
     {
-        planets = FindObjectsOfType<PlanetController>();
+        Instance = this;
+        planets = FindObjectsOfType<PlanetController>().ToList();
     }
 
     void Start()
