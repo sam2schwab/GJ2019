@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
-using System.Linq;
-using UnityEngine.Serialization;
+using Random = System.Random;
 
 public class PlayerController : MonoBehaviour
 {
@@ -21,32 +20,37 @@ public class PlayerController : MonoBehaviour
 	
 	// Update is called once per frame
 	private void Update () {
-        if (Input.GetButtonDown("Jump"))
-        {
-	        ToggleAnchor();
-        }
-
         if (_isAnchored)
         {
-            _playerTransform.RotateAround(anchorTransform.position, _rotationAxis, _rotationSpeed * Time.deltaTime);
+	        if (Input.GetButtonDown("Jump"))
+	        {
+		        _isAnchored = false;
+	        }
+	        _playerTransform.RotateAround(anchorTransform.position, _rotationAxis, _rotationSpeed * Time.deltaTime);
         }
-
-        if (!_isAnchored)
+        else
         {
+	        TryToAnchor();
             _playerTransform.Translate(speed * Vector3.up * Time.deltaTime);
         }
-       
-    
 	}
 
-	private void ToggleAnchor()
+	private void TryToAnchor()
 	{
-		_isAnchored = !_isAnchored;
-		if (!_isAnchored) return;
-		anchorTransform = FindNearestPlanet();
-		UpdateRotation();
+		foreach (var planet in GameManager.Instance.planets)
+		{
+			if (planet.transform == anchorTransform) continue;
+			var radius = _playerTransform.position - planet.gameObject.transform.position;
+			if (radius.magnitude < planet.GravityRadius && Vector3.Angle(_playerTransform.up, radius) - 90 < 1.5)
+			{
+				anchorTransform = planet.transform;
+				UpdateRotation();
+				_isAnchored = true;
+				return;
+			}
+		}
 	}
-	
+
 	private void UpdateRotation()
 	{
 		//update rotation axis
@@ -64,24 +68,8 @@ public class PlayerController : MonoBehaviour
 		_playerTransform.Rotate(Vector3.up, angle, Space.World);
 	}
 
-	private Transform FindNearestPlanet()
-	{
-		var planets = GameManager.Instance.planets;
-		var nearestPlanet = planets.First();
-		var nearestPlanetDistance = DistanceToPlayer(nearestPlanet);
-		foreach (var planet in planets)
-		{
-			var dist = DistanceToPlayer(planet);
-			if (dist >= nearestPlanetDistance) continue;
-			nearestPlanet = planet;
-			nearestPlanetDistance = dist;
-		}
-
-		return nearestPlanet.transform;
-	}
-
 	private float DistanceToPlayer(PlanetController planet)
 	{
-		return Vector3.Distance(planet.gameObject.transform.position, _playerTransform.position) - planet.Size;
+		return Vector3.Distance(planet.gameObject.transform.position, _playerTransform.position) - planet.Size / 2;
 	}
 }
