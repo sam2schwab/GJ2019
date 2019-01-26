@@ -5,6 +5,8 @@ public class PlayerController : MonoBehaviour
 {
 	public Transform anchorTransform;
 	private Transform _playerTransform;
+    public float speed = 10;
+    private bool isAnchored = true;
 	
 	// Use this for initialization
 	private void Start ()
@@ -14,6 +16,21 @@ public class PlayerController : MonoBehaviour
 	
 	// Update is called once per frame
 	private void Update () {
-		_playerTransform.RotateAround(anchorTransform.position, Vector3.up, -20*Time.deltaTime);
+        if (Input.GetButtonDown("Jump"))
+        {
+            isAnchored = !isAnchored;
+        }
+
+        if (isAnchored)
+        {
+            _playerTransform.RotateAround(anchorTransform.position, Vector3.up, -20 * Time.deltaTime);
+        }
+
+        if (!isAnchored)
+        {
+            _playerTransform.Translate(speed * Vector3.up * Time.deltaTime);
+        }
+       
+    
 	}
 }
