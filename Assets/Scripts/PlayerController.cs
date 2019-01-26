@@ -15,6 +15,9 @@ public class PlayerController : MonoBehaviour
     bool isWrappingX = false; //for ScreenWrapping
     bool isWrappingY = false; //for ScreenWrapping
 
+    //Collisions
+
+
     // Use this for initialization
     private void Start()
     {
@@ -43,7 +46,13 @@ public class PlayerController : MonoBehaviour
 
     }
 
-	private void TryToAnchor()
+    void OnTriggerEnter(Collider other)
+    {
+        Destroy(gameObject);
+        GameManager.Instance.PlayerCrash();
+    }
+
+    private void TryToAnchor()
 	{
 		foreach (var planet in GameManager.Instance.planets)
 		{

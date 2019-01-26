@@ -19,6 +19,7 @@ public class GameManager : MonoBehaviour
     public int homeHealth = 5;
 
     public AudioClip[] explosionClips;
+    public AudioClip playerCrashClip;
     private AudioSource audioSource;
 
 
@@ -54,8 +55,12 @@ public class GameManager : MonoBehaviour
     {
         audioSource.clip = explosionClips[rng.Next(explosionClips.Length)];
         audioSource.pitch = rng.Next(0,8) * 0.1f + 0.6f;
-
         audioSource.Play();
     }
-       
+
+    public void PlayerCrash()
+    {
+        audioSource.clip = playerCrashClip;
+        audioSource.Play();
+    }
 }
