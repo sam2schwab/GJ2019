@@ -9,7 +9,10 @@ public class PlayerController : MonoBehaviour
     public Transform rightWingTransform;
     public Transform behindTransform;
 
-    public float speed = 25;
+	public float baseSpeed = 15;
+    public float minSpeed = 10;
+    public float maxSpeed= 25;
+    float speed;
 	public Transform anchorTransform;
 
 	private Vector3 _rotationAxis;
@@ -27,6 +30,7 @@ public class PlayerController : MonoBehaviour
     // Use this for initialization
     private void Start()
     {
+        speed = baseSpeed;
         _playerTransform = gameObject.transform;
         UpdateRotation();
     }
@@ -34,12 +38,32 @@ public class PlayerController : MonoBehaviour
 	// Update is called once per frame
 	private void Update () {
 		var axis = Input.GetAxis("Vertical");
-		if (Mathf.Abs(axis - 0f) > 0.01f)
-		{
-			speed += 5 * axis * Time.deltaTime; 
-			var radius = _playerTransform.position - anchorTransform.position;
-			UpdateRotationSpeed(radius);
-		}
+        float newSpeed;
+        if (axis<0)
+        {
+            axis *= -1;
+            newSpeed = baseSpeed - (baseSpeed - minSpeed) * axis;
+        }
+        else
+        {
+            newSpeed = baseSpeed + (maxSpeed - baseSpeed) * axis;
+        }
+        if (Mathf.Abs(speed - newSpeed) > 0.01f)
+        {
+            speed = newSpeed;
+            if (_isAnchored)
+            {
+                var radius = _playerTransform.position - anchorTransform.position;
+                UpdateRotationSpeed(radius);
+            }
+        }
+
+        //if (Mathf.Abs(axis - 0f) > 0.01f)
+        //{
+        //	speed += 5 * axis * Time.deltaTime; 
+        //	var radius = _playerTransform.position - anchorTransform.position;
+        //	UpdateRotationSpeed(radius);
+        //}
         if (_isAnchored)
         {
 	        if (CheckButton("Jump"))
