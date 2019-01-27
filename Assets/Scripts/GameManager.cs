@@ -19,15 +19,24 @@ public class GameManager : MonoBehaviour
     public GameObject home;
     public int homeHealth = 5;
 
+    public int score = 0;
+
+    //For sound
     public AudioClip[] explosionClips;
     public AudioClip playerCrashClip;
     public AudioClip enemyDeathClip;
+    public AudioClip enemyHitClip;
     private AudioSource audioSource;
 
 
     // Start is called before the first frame update
     private void Awake()
     {
+        var cubeMaps = Resources.LoadAll<Cubemap>("Skyboxes");
+        var cubeMap = cubeMaps[rng.Next(cubeMaps.Length)];
+        var material = new Material(Shader.Find("Skybox/Cubemap"));
+        material.SetTexture("_Tex", cubeMap);
+        RenderSettings.skybox = material;
         Instance = this;
         planets = FindObjectsOfType<PlanetController>().ToList();
     }
@@ -53,6 +62,12 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public void AugmentScore(int gain)
+    {
+        score += gain;
+        print("Score : " + score);
+    }
+
     #region Sound clips
 
     public void Explosion()
@@ -71,6 +86,12 @@ public class GameManager : MonoBehaviour
     public void EnemyDeath()
     {
         audioSource.clip = enemyDeathClip;
+        audioSource.Play();
+    }
+
+    public void EnemyHit()
+    {
+        audioSource.clip = enemyHitClip;
         audioSource.Play();
     }
 
