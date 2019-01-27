@@ -62,7 +62,7 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
     public void DamageHome(int damage)
@@ -87,28 +87,42 @@ public class GameManager : MonoBehaviour
 
     public void Explosion()
     {
-        audioSource.clip = explosionClips[Rng.Next(explosionClips.Length)];
-        audioSource.pitch = Rng.Next(0,8) * 0.1f + 0.6f;
-        audioSource.Play();
+        var clip = explosionClips[Rng.Next(explosionClips.Length)];
+        var pitch = Rng.Next(0, 8) * 0.1f + 0.6f;
+        PlaySound(clip, pitch);
     }
 
     public void PlayerCrash()
     {
-        audioSource.clip = playerCrashClip;
-        audioSource.Play();
+        PlaySound(playerCrashClip);
     }
 
     public void EnemyDeath()
     {
-        audioSource.clip = enemyDeathClip;
-        audioSource.Play();
+        PlaySound(enemyDeathClip);
     }
 
     public void EnemyHit()
     {
-        audioSource.clip = enemyHitClip;
-        audioSource.Play();
+        PlaySound(enemyHitClip);
     }
+
+    private void PlaySound(AudioClip clip, float pitch = 1f)
+    {
+        var audioSource = gameObject.AddComponent<AudioSource>();
+        audioSource.clip = clip;
+        audioSource.pitch = pitch;
+        audioSource.Play();
+        StartCoroutine(DeleteSource(audioSource, clip.length));
+    }
+
+    private IEnumerator DeleteSource(AudioSource audioSource, float clipLength)
+    {
+        yield return new WaitForSeconds(clipLength);
+        Destroy(audioSource);
+    }
+
+
 
     #endregion
 }

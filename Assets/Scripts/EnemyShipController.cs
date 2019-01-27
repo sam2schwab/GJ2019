@@ -94,7 +94,7 @@ public class EnemyShipController : MonoBehaviour
 
     private void Die()
     {
-        GameManager.Instance.Explosion();
+        //GameManager.Instance.Explosion();
         GameManager.Instance.AugmentScore(scoreValue);
         Instantiate(explosion, transform.position, transform.rotation);
         Destroy(gameObject);
