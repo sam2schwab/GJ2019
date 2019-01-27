@@ -6,10 +6,16 @@ public class EnemyShipController : MonoBehaviour
 {
     public int life;
     public int shield;
-    public int speed;
+    public float speed;
     public int damage;
     private GameObject home;
     private Vector3 target;
+    public int scoreValue;
+
+    //For flashing on hit
+    public float flashTime = 0.1f;
+    Color originalColor;
+    private Material mat;
 
     // Start is called before the first frame update
     void Start()
@@ -17,6 +23,10 @@ public class EnemyShipController : MonoBehaviour
         home = GameManager.Instance.home;
         target = home.transform.position;
         target.y = 8;
+        transform.LookAt(target);
+
+        mat = GetComponentInChildren<Renderer>().material;
+        originalColor = mat.color;
     }
 
     // Update is called once per frame
@@ -41,10 +51,51 @@ public class EnemyShipController : MonoBehaviour
     {
         if (other.tag == "Bullets")
         {
-            GameManager.Instance.Explosion();
+            int damage = other.gameObject.GetComponent<BulletMover>().damage;
             Destroy(other.gameObject);
-            Destroy(gameObject);
+            GameManager.Instance.EnemyHit();
+            FlashRed();
+
+            if (shield > 0)
+            {
+                if (damage < shield)
+                {
+                    shield -= damage;
+                    damage = 0;
+                }
+                else
+                {
+                    damage -= shield;
+                    shield = 0;
+                }
+            }
+  
+            life -= damage;
+
+            if (life < 1)
+            {
+                Die();
+            }
         }
     }
+
+    void FlashRed()
+    {
+        mat.color = Color.red;
+        Invoke("ResetColor", flashTime);
+    }
+
+    void ResetColor()
+    {
+        mat.color = originalColor;
+    }
+
+    private void Die()
+    {
+        GameManager.Instance.Explosion();
+        GameManager.Instance.AugmentScore(scoreValue);
+        Destroy(gameObject);
+    }
+        
 
 }
