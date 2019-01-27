@@ -27,7 +27,7 @@ public class EnemyShipController : MonoBehaviour
         target.y = 8;
         transform.LookAt(target);
 
-        mat = GetComponentInChildren<Renderer>().material;
+        mat = GetComponentInChildren<MeshRenderer>().material;
         originalColor = mat.color;
     }
 

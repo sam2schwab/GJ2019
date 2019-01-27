@@ -14,7 +14,7 @@ public class DefeatManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (GameManager.Instance.homeHealth==0)
+        if (GameManager.Instance.isGameOver)
         {
             defeatPopupGo.SetActive(true);
         }
