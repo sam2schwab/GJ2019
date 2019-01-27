@@ -31,7 +31,7 @@ public class GameManager : MonoBehaviour
     public List<PlanetController> planets;
     public GameObject home;
     public int homeHealth = 5;
-
+    public bool isGameOver = false;
     public int score = 0;
 
     //For sound
@@ -71,7 +71,9 @@ public class GameManager : MonoBehaviour
         print("homeHealth = " + homeHealth);
         if (homeHealth == 0)
         {
-            Debug.Log("Game Over");  //Death();
+            isGameOver = true;
+            Debug.Log("Game Over");
+            //Death();
         }
     }
 

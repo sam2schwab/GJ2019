@@ -17,8 +17,9 @@ public class PlayerController : MonoBehaviour
     //public Transform wingShotSpawnR;
     public float fireRate = 0.05f;
     private float nextFire = 0.0f;
-    public AudioSource shotSound;
+    private AudioSource shotSound;
 
+    public GameObject explosion;
 
     // Use this for initialization
     private void Start()
@@ -32,7 +33,7 @@ public class PlayerController : MonoBehaviour
 	private void Update () {
         if (_isAnchored)
         {
-	        if (Input.GetButtonDown("Jump"))
+	        if (CheckButton("Jump"))
 	        {
 		        _isAnchored = false;
 	        }
@@ -45,7 +46,7 @@ public class PlayerController : MonoBehaviour
         }
 
         //Shooting
-        if (Input.GetButton("Fire1") && Time.time > nextFire)
+        if (CheckButton("Fire1") && Time.time > nextFire)
         {
             nextFire = Time.time + fireRate;
             Instantiate(shot, noseShotSpawn.position, noseShotSpawn.rotation);
@@ -58,7 +59,10 @@ public class PlayerController : MonoBehaviour
         if(other.tag == "Planets")
         {
             Destroy(gameObject);
+            Instantiate(explosion, transform.position, transform.rotation);
             GameManager.Instance.PlayerCrash();
+            GameManager.Instance.isGameOver = true;
+            
         }
         
     }
@@ -95,4 +99,14 @@ public class PlayerController : MonoBehaviour
 		var angle = Vector3.SignedAngle(direction, radius, Vector3.up) + modifier;
 		_playerTransform.Rotate(Vector3.up, angle, Space.World);
 	}
+
+    private bool CheckButton(string button)
+    {
+        if (Input.GetButton(button) && !GameManager.Instance.isGameOver)
+        {
+            return true;
+        }
+        return false;
+    
+    }
 }
