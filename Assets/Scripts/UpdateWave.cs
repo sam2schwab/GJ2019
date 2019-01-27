@@ -11,16 +11,17 @@ public class UpdateWave : MonoBehaviour
     void Start()
     {
         waveText = GetComponent<Text>();
-        waveText.text = "Score: 0";
+        waveText.text = "Wave: 1";
     }
 
     // Update is called once per frame
     void Update()
     {
-        //int newWave = GameManager.Instance.wave;
-        //if (wave != newWave)
-        //{
-        //    waveText.text = "Wave: " + newWave.ToString();
-        //}
+        int newWave = GameManager.Instance.wave;
+        if (wave != newWave)
+        {
+            waveText.text = "Wave: " + newWave;
+            wave = newWave;
+        }
     }
 }

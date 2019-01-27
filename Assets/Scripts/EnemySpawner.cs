@@ -13,12 +13,10 @@ public class EnemySpawner : MonoBehaviour
     public float scalingFactor = 0.2f;
     private float _nextPause;
     private float _nextWave;
-    private float _initialDifficulty;
-    public float waveNumber;
-    
-    private float _intervalBetweenShips = 12f;
+
+    public float intervalBetweenShips = 12f;
     private float _nextSpawn;
-    private float _intervalBetweenCapitalShips = 53f;
+    public float intervalBetweenCapitalShips = 53f;
     private float _nextCapitalSpawn;
     private float _spawnRadius;
     private float _maxZ;
@@ -36,9 +34,8 @@ public class EnemySpawner : MonoBehaviour
         _nextSpawn = now;
         _nextPause = now + waveDuration;
         _nextWave = _nextPause + pauseDuration;
-        _nextCapitalSpawn = now + _intervalBetweenCapitalShips;
-        waveNumber = 1;
-        _initialDifficulty = difficultyFactor;
+        _nextCapitalSpawn = now + intervalBetweenCapitalShips;
+        GameManager.Instance.wave = 1;
     }
 
     // Update is called once per frame
@@ -48,12 +45,12 @@ public class EnemySpawner : MonoBehaviour
         if (Time.time > _nextSpawn)
         {
             Spawn(SpawnType.Ship);
-            _nextSpawn += _intervalBetweenShips / difficultyFactor;
+            _nextSpawn += intervalBetweenShips / difficultyFactor;
         }
         if (Time.time > _nextCapitalSpawn)
         {
             Spawn(SpawnType.CapitalShip);
-            _nextCapitalSpawn += _intervalBetweenCapitalShips / difficultyFactor;
+            _nextCapitalSpawn += intervalBetweenCapitalShips / difficultyFactor;
         }
     }
 
@@ -61,9 +58,11 @@ public class EnemySpawner : MonoBehaviour
     {
         if (Time.time > _nextWave)
         {
-            waveNumber++;
+            GameManager.Instance.wave++;
             _nextWave += waveDuration + pauseDuration;
             difficultyFactor *= scalingFactor;
+            _nextSpawn /= scalingFactor;
+            _nextCapitalSpawn /= scalingFactor;
         }
 
         if (Time.time > _nextPause)
