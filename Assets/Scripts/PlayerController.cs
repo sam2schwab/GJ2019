@@ -1,8 +1,15 @@
-﻿using UnityEngine;
+﻿using System;
+using System.Collections.Generic;
+using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-	public float speed = 25;
+    public Transform noseTransform;
+    public Transform leftWingTransform;
+    public Transform rightWingTransform;
+    public Transform behindTransform;
+
+    public float speed = 25;
 	public Transform anchorTransform;
 
 	private Vector3 _rotationAxis;
@@ -10,14 +17,10 @@ public class PlayerController : MonoBehaviour
     private bool _isAnchored = true;
     private float _rotationSpeed;
 
-    //Shooting
-    public GameObject shot;
-    public Transform noseShotSpawn;
-    //public Transform wingShotSpawnL;
-    //public Transform wingShotSpawnR;
-    public float fireRate = 0.05f;
-    private float nextFire = 0.0f;
-    private AudioSource shotSound;
+    //Shooting & Weaponry
+    public List<WeaponScript> weapons;
+    public GameObject powerUp;
+    private BulletMover shotScript;
 
     public GameObject explosion;
 
@@ -26,7 +29,6 @@ public class PlayerController : MonoBehaviour
     {
         _playerTransform = gameObject.transform;
         UpdateRotation();
-        shotSound = GetComponent<AudioSource>();
     }
 	
 	// Update is called once per frame
@@ -53,11 +55,12 @@ public class PlayerController : MonoBehaviour
         }
 
         //Shooting
-        if (CheckButton("Fire1") && Time.time > nextFire)
+        if (CheckButton("Fire1"))
         {
-            nextFire = Time.time + fireRate;
-            Instantiate(shot, noseShotSpawn.position, noseShotSpawn.rotation);
-            shotSound.Play();
+            foreach (var weapon in weapons)
+            {
+                weapon.Shoot();
+            }
         }
     }
 
@@ -114,5 +117,38 @@ public class PlayerController : MonoBehaviour
 	private bool CheckButton(string button)
     {
 	    return Input.GetButton(button) && !GameManager.Instance.isGameOver;
+    }
+
+    //For PickUps
+    public void SetPower(GameObject newPowerUp)
+    {
+        powerUp = newPowerUp;
+    }
+
+    public void SetWeapon(WeaponScript weapon)
+    {
+        ClearCurrentWeapon();
+        switch (weapon.emissionPoint)
+        {
+            case HardPoint.Nose:
+                weapons.Add(Instantiate(weapon.gameObject, noseTransform).GetComponent<WeaponScript>());
+                break;
+            case HardPoint.Wings:
+                weapons.Add(Instantiate(weapon.gameObject, leftWingTransform).GetComponent<WeaponScript>());
+                weapons.Add(Instantiate(weapon.gameObject, rightWingTransform).GetComponent<WeaponScript>());
+                break;
+            case HardPoint.Behind:
+                weapons.Add(Instantiate(weapon.gameObject, behindTransform).GetComponent<WeaponScript>());
+                break;
+        }
+    }
+
+    private void ClearCurrentWeapon()
+    {
+        foreach (var weapon in weapons)
+        {
+            Destroy(weapon.gameObject);
+        }
+        weapons.Clear();
     }
 }

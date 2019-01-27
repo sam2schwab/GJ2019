@@ -107,7 +107,7 @@ public class GameManager : MonoBehaviour
         PlaySound(enemyHitClip);
     }
 
-    private void PlaySound(AudioClip clip, float pitch = 1f)
+    public void PlaySound(AudioClip clip, float pitch = 1f)
     {
         var audioSource = gameObject.AddComponent<AudioSource>();
         audioSource.clip = clip;

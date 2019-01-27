@@ -8,9 +8,10 @@ public class BulletMover : MonoBehaviour
 
     public float speed;
     public int damage=1;
+    public float lifeTime = 3.0f;
+    float birthTime;
+
     Rigidbody rb;
-    float lifeTime = 3.0f;
-    float birthTime; 
 
     void Start()
     {
