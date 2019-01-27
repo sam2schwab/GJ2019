@@ -27,6 +27,11 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     private void Awake()
     {
+        var cubeMaps = Resources.LoadAll<Cubemap>("Skyboxes");
+        var cubeMap = cubeMaps[rng.Next(cubeMaps.Length)];
+        var material = new Material(Shader.Find("Skybox/Cubemap"));
+        material.SetTexture("_Tex", cubeMap);
+        RenderSettings.skybox = material;
         Instance = this;
         planets = FindObjectsOfType<PlanetController>().ToList();
     }

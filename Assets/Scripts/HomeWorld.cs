@@ -20,6 +20,7 @@ public class HomeWorld : MonoBehaviour
         o.GetComponent<MeshFilter>().mesh = null;
         _planet = Instantiate(_prefabs[Rng.Next(_prefabs.Length)], transform);
         _planet.transform.localScale *= 0.1f;
+        _planet.transform.position *= 0.1f;
     }
 
     private void Update()
