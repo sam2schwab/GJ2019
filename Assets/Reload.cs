@@ -45,6 +45,8 @@ public class Reload : MonoBehaviour
             barDisplay = 0;
             lastUse = Time.time;
             //Shoot
+            GameManager.Instance.homeHealth -= 1;
+            GameManager.Instance.score += 100;
         }
         else
         {
