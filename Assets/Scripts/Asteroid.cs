@@ -22,7 +22,8 @@ public class Asteroid : MonoBehaviour
         GameObject o = gameObject;
         o.GetComponent<MeshFilter>().mesh = null;
         _asteroid = Instantiate(_prefabs[Rng.Next(_prefabs.Length)], transform);
-        _asteroid.transform.localScale = new Vector3(0.2f,0.2f,0.2f);
+        _asteroid.transform.localScale *= 0.1f;
+        _asteroid.transform.localPosition *= 0.1f; 
         _eulers = new Vector3((float) (Rng.NextDouble()*MaxRotationSpeed),(float) (Rng.NextDouble()*MaxRotationSpeed),(float) (Rng.NextDouble()*MaxRotationSpeed));
     }
 
