@@ -31,6 +31,13 @@ public class PlayerController : MonoBehaviour
 	
 	// Update is called once per frame
 	private void Update () {
+		var axis = Input.GetAxis("Vertical");
+		if (Mathf.Abs(axis - 0f) > 0.01f)
+		{
+			speed += 5 * axis * Time.deltaTime; 
+			var radius = _playerTransform.position - anchorTransform.position;
+			UpdateRotationSpeed(radius);
+		}
         if (_isAnchored)
         {
 	        if (CheckButton("Jump"))
@@ -62,7 +69,6 @@ public class PlayerController : MonoBehaviour
             Instantiate(explosion, transform.position, transform.rotation);
             //GameManager.Instance.PlayerCrash();
             GameManager.Instance.isGameOver = true;
-            
         }
         
     }
@@ -89,10 +95,8 @@ public class PlayerController : MonoBehaviour
 		var direction = _playerTransform.up;
 		var radius = _playerTransform.position - anchorTransform.position;
 		_rotationAxis = Vector3.Cross(radius, direction).y < 0 ? Vector3.down : Vector3.up;
-		
-		//update rotation speed (deg/sec)
-		var perimeter = 2 * Mathf.PI * radius.magnitude;
-		_rotationSpeed = speed * 360 / perimeter;
+
+		UpdateRotationSpeed(radius);
 		
 		//update ship angle
 		var modifier = _rotationAxis.y < 0 ? -90 : 90; 
@@ -100,13 +104,15 @@ public class PlayerController : MonoBehaviour
 		_playerTransform.Rotate(Vector3.up, angle, Space.World);
 	}
 
-    private bool CheckButton(string button)
+	private void UpdateRotationSpeed(Vector3 radius)
+	{
+//update rotation speed (deg/sec)
+		var perimeter = 2 * Mathf.PI * radius.magnitude;
+		_rotationSpeed = speed * 360 / perimeter;
+	}
+
+	private bool CheckButton(string button)
     {
-        if (Input.GetButton(button) && !GameManager.Instance.isGameOver)
-        {
-            return true;
-        }
-        return false;
-    
+	    return Input.GetButton(button) && !GameManager.Instance.isGameOver;
     }
 }

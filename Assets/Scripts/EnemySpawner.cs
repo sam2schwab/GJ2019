@@ -14,6 +14,7 @@ public class EnemySpawner : MonoBehaviour
     void Start()
     {
         _spawnRadius = GameManager.Instance.MainCamera.ViewportToWorldPoint(new Vector3(0f, 0f, 60f)).magnitude;
+        _nextSpawn = Time.time;
     }
 
     // Update is called once per frame

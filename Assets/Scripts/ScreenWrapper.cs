@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class ScreenWrapper : MonoBehaviour
 {
+    public PlayerController player;
+    
     // Update is called once per frame
     void Update()
     {
@@ -14,6 +16,7 @@ public class ScreenWrapper : MonoBehaviour
             var position = ship.position;
             position = new Vector3(-position.x, position.y, position.z);
             ship.position = position;
+            player.anchorTransform = null;
         }
         if (viewportPoint.y > 1.03 || viewportPoint.y < -0.03)
         {
@@ -21,6 +24,7 @@ public class ScreenWrapper : MonoBehaviour
             var position = ship.position;
             position = new Vector3(position.x, position.y, -position.z);
             ship.position = position;
+            player.anchorTransform = null;
         }
     }
 }
