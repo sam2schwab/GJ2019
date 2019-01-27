@@ -13,7 +13,20 @@ public class GameManager : MonoBehaviour
 
     #endregion
 
-    private static System.Random rng = new System.Random();
+    private Camera _mainCamera;
+    public Camera MainCamera
+    {
+        get
+        {
+            if (_mainCamera == null)
+            {
+                _mainCamera = Camera.main;
+            }
+            return _mainCamera;
+        }
+    }
+
+    public static readonly System.Random Rng = new System.Random();
 
     public List<PlanetController> planets;
     public GameObject home;
@@ -33,7 +46,7 @@ public class GameManager : MonoBehaviour
     private void Awake()
     {
         var cubeMaps = Resources.LoadAll<Cubemap>("Skyboxes");
-        var cubeMap = cubeMaps[rng.Next(cubeMaps.Length)];
+        var cubeMap = cubeMaps[Rng.Next(cubeMaps.Length)];
         var material = new Material(Shader.Find("Skybox/Cubemap"));
         material.SetTexture("_Tex", cubeMap);
         RenderSettings.skybox = material;
@@ -74,8 +87,8 @@ public class GameManager : MonoBehaviour
 
     public void Explosion()
     {
-        audioSource.clip = explosionClips[rng.Next(explosionClips.Length)];
-        audioSource.pitch = rng.Next(0,8) * 0.1f + 0.6f;
+        audioSource.clip = explosionClips[Rng.Next(explosionClips.Length)];
+        audioSource.pitch = Rng.Next(0,8) * 0.1f + 0.6f;
         audioSource.Play();
     }
 
