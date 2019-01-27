@@ -16,7 +16,7 @@ public class EnemyShipController : MonoBehaviour
     {
         home = GameManager.Instance.home;
         target = home.transform.position;
-        target.y = 20;
+        target.y = 8;
     }
 
     // Update is called once per frame
@@ -37,6 +37,14 @@ public class EnemyShipController : MonoBehaviour
         Destroy(gameObject);
     }
 
-    
+    void OnTriggerEnter(Collider other)
+    {
+        if (other.tag == "Bullets")
+        {
+            GameManager.Instance.Explosion();
+            Destroy(other.gameObject);
+            Destroy(gameObject);
+        }
+    }
 
 }

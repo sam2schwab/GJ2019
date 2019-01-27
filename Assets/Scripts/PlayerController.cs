@@ -10,7 +10,14 @@ public class PlayerController : MonoBehaviour
     private bool _isAnchored = true;
     private float _rotationSpeed;
 
-    //Collisions
+    //Shooting
+    public GameObject shot;
+    public Transform noseShotSpawn;
+    //public Transform wingShotSpawnL;
+    //public Transform wingShotSpawnR;
+    public float fireRate = 0.05f;
+    private float nextFire = 0.0f;
+    public AudioSource shotSound;
 
 
     // Use this for initialization
@@ -18,6 +25,7 @@ public class PlayerController : MonoBehaviour
     {
         _playerTransform = gameObject.transform;
         UpdateRotation();
+        shotSound = GetComponent<AudioSource>();
     }
 	
 	// Update is called once per frame
@@ -35,12 +43,24 @@ public class PlayerController : MonoBehaviour
 	        TryToAnchor();
             _playerTransform.Translate(speed * Vector3.up * Time.deltaTime);
         }
+
+        //Shooting
+        if (Input.GetButton("Fire1") && Time.time > nextFire)
+        {
+            nextFire = Time.time + fireRate;
+            Instantiate(shot, noseShotSpawn.position, noseShotSpawn.rotation);
+            shotSound.Play();
+        }
     }
 
     void OnTriggerEnter(Collider other)
     {
-        Destroy(gameObject);
-        GameManager.Instance.PlayerCrash();
+        if(other.tag == "Planets")
+        {
+            Destroy(gameObject);
+            GameManager.Instance.PlayerCrash();
+        }
+        
     }
 
     private void TryToAnchor()
