@@ -19,4 +19,5 @@ public class DefeatManager : MonoBehaviour
             defeatPopupGo.SetActive(true);
         }
     }
+    }
 }
