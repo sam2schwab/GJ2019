@@ -17,6 +17,8 @@ public class EnemyShipController : MonoBehaviour
     Color originalColor;
     private Material mat;
 
+    public GameObject explosion;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -94,6 +96,7 @@ public class EnemyShipController : MonoBehaviour
     {
         GameManager.Instance.Explosion();
         GameManager.Instance.AugmentScore(scoreValue);
+        Instantiate(explosion, transform.position, transform.rotation);
         Destroy(gameObject);
     }
         
