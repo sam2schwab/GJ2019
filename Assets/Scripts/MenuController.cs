@@ -28,10 +28,12 @@ public class MenuController : MonoBehaviour {
     public void Credits()
     {
         SceneManager.LoadScene("Credits", LoadSceneMode.Single);
+        GetComponent<AudioSource>().Play();
     }
 
     public void Back()
     {
         SceneManager.LoadScene("Start", LoadSceneMode.Single);
+        GetComponent<AudioSource>().Play();
     }
 }
