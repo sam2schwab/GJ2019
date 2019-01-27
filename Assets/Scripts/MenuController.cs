@@ -29,4 +29,9 @@ public class MenuController : MonoBehaviour {
     {
         SceneManager.LoadScene("Credits", LoadSceneMode.Single);
     }
+
+    public void Back()
+    {
+        SceneManager.LoadScene("Start", LoadSceneMode.Single);
+    }
 }
