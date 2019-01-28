@@ -50,7 +50,9 @@ public class PowerUpSpawner : MonoBehaviour
         } while (IntersectsPlanet(position));
 
         var pickup = _powerUps[rng.Next(_powerUps.Count)];
-        onMap.Add(Instantiate(pickup, position, Quaternion.identity));
+        var item = Instantiate(pickup, position, Quaternion.identity);
+        item.transform.localScale *= 1.5f;
+        onMap.Add(item);
     }
 
     private bool IntersectsPlanet(Vector3 position)
