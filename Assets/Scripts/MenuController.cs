@@ -18,29 +18,29 @@ public class MenuController : MonoBehaviour {
     public void StartGame()
     {
         SceneManager.LoadScene("main", LoadSceneMode.Single);
-        GetComponent<AudioSource>().Play();
+        //GetComponent<AudioSource>().Play();
     }
 
     public void QuitGame()
     {
         Application.Quit();
-        GetComponent<AudioSource>().Play();
+        //GetComponent<AudioSource>().Play();
     }
 
     public void Credits()
     {
         SceneManager.LoadScene("Credits", LoadSceneMode.Single);
-        GetComponent<AudioSource>().Play();
+        //GetComponent<AudioSource>().Play();
     }
 
     public void Back()
     {
         SceneManager.LoadScene("Start", LoadSceneMode.Single);
-        GetComponent<AudioSource>().Play();
+        //GetComponent<AudioSource>().Play();
     }
     public void Intro()
     {
         SceneManager.LoadScene("IntroVideo", LoadSceneMode.Single);
-        GetComponent<AudioSource>().Play();
+        //GetComponent<AudioSource>().Play();
     }
 }

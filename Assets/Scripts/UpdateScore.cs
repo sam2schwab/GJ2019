@@ -21,6 +21,7 @@ public class UpdateScore : MonoBehaviour
         if (score != newScore)
         {
             scoreText.text = "Score: " + newScore.ToString();
+            score = newScore;
         }
     }
 }
