@@ -24,7 +24,7 @@ public class BulletMover : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(Time.time - birthTime > lifeTime)
+        if(lifeTime > 0 && Time.time - birthTime > lifeTime)
         {
             Disapear();
         }
