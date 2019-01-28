@@ -5,17 +5,15 @@ using UnityEngine.UI;
 
 public class Reload : MonoBehaviour
 {
-    public float barDisplay = 0f;
+    float barDisplay = 1f;
     public Sprite noPowerUpSprite;
     Vector2 pos;
     Vector2 size;
-    Texture2D weaponIconEmpty;
+    public Texture2D weaponIconEmpty;
     RectTransform rectTransform;
     public GameObject canvas;
     RectTransform menuCanvasRectTransform;
-    float lastUse = 0f;
-
-    public Sprite test;
+    //float lastUse = 0f;
 
     // Start is called before the first frame update
     void Start()
@@ -24,14 +22,13 @@ public class Reload : MonoBehaviour
         menuCanvasRectTransform = canvas.GetComponent<RectTransform>();
         size = new Vector2(rectTransform.rect.width, rectTransform.rect.height);
         pos = new Vector2(rectTransform.position.x- size.x/2, menuCanvasRectTransform.rect.height- rectTransform.position.y-size.y/2);
-      
     }
 
     void OnGUI()
     {
 
         // draw the filled-in part:
-        GUI.contentColor = Color.red;
+        GUI.contentColor = new Color(0,0,0,0.5f);
         GUI.BeginGroup(new Rect(pos.x, pos.y, size.x, size.y * barDisplay));
         GUI.Box(new Rect(0, 0, size.x, size.y), weaponIconEmpty);
         GUI.EndGroup();
@@ -72,11 +69,11 @@ public class Reload : MonoBehaviour
     }
     public void UpdateAmmo(float ammoPercent)
     {
-        barDisplay = 1- ammoPercent;
         if (ammoPercent <= 0)
         {
             UpdateWeaponSprite(noPowerUpSprite);
         }
+        barDisplay = 1- ammoPercent;
     }
 
     public void UpdateWeaponSprite(Sprite weaponSprite)

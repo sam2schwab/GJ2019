@@ -34,7 +34,7 @@ public class PickUp : MonoBehaviour
             {
                 player.SetWeapon(weapon);
             }
-
+            
             Destroy(gameObject);
         }
     }
