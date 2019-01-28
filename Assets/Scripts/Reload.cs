@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class Reload : MonoBehaviour
 {
-    float barDisplay = 1f;
+    float barDisplay = 0f;
     public Sprite noPowerUpSprite;
     Vector2 pos;
     Vector2 size;
@@ -28,11 +28,10 @@ public class Reload : MonoBehaviour
     {
 
         // draw the filled-in part:
-        GUI.contentColor = new Color(0,0,0,0.5f);
+        GUI.contentColor = new Color(0, 0, 0, 0.6f);
         GUI.BeginGroup(new Rect(pos.x, pos.y, size.x, size.y * barDisplay));
         GUI.Box(new Rect(0, 0, size.x, size.y), weaponIconEmpty);
         GUI.EndGroup();
-
     }
 
     // Update is called once per frame
