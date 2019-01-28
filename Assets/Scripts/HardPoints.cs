@@ -4,3 +4,5 @@
     Wings,
     Behind
 }
+
+public enum PickUpType { Weapon, Power };

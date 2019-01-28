@@ -9,19 +9,20 @@ public class PlayerController : MonoBehaviour
     public Transform rightWingTransform;
     public Transform behindTransform;
 
-	public float baseSpeed = 15;
+    public float baseSpeed = 15;
     public float minSpeed = 10;
-    public float maxSpeed= 25;
+    public float maxSpeed = 25;
     float speed;
-	public Transform anchorTransform;
+    public Transform anchorTransform;
 
-	private Vector3 _rotationAxis;
-	private Transform _playerTransform;
+    private Vector3 _rotationAxis;
+    private Transform _playerTransform;
     private bool _isAnchored = true;
     private float _rotationSpeed;
 
     //Shooting & Weaponry
     public List<WeaponScript> weapons;
+    public List<WeaponScript> powerUps;
     public GameObject powerUp;
     private BulletMover shotScript;
 
@@ -86,6 +87,20 @@ public class PlayerController : MonoBehaviour
                 weapon.Shoot();
             }
         }
+
+        if (CheckButton("Fire2"))
+        {
+            if(powerUps.Count > 0)
+            {
+                foreach (var weapon in powerUps)
+                {
+                    weapon.Shoot();
+                }
+
+                if (powerUps[0].ammo == 0) ClearPowerUp();
+            }
+            
+        }
     }
 
     void OnTriggerEnter(Collider other)
@@ -144,25 +159,30 @@ public class PlayerController : MonoBehaviour
     }
 
     //For PickUps
-    public void SetPower(GameObject newPowerUp)
+    public void SetPower(WeaponScript newPowerUp)
     {
-        powerUp = newPowerUp;
+        SetWeaponScript(newPowerUp, powerUps);
     }
 
     public void SetWeapon(WeaponScript weapon)
     {
         ClearCurrentWeapon();
-        switch (weapon.emissionPoint)
+        SetWeaponScript(weapon, weapons);
+    }
+
+    public void SetWeaponScript(WeaponScript script, List<WeaponScript> collection)
+    {
+        switch (script.emissionPoint)
         {
             case HardPoint.Nose:
-                weapons.Add(Instantiate(weapon.gameObject, noseTransform).GetComponent<WeaponScript>());
+                collection.Add(Instantiate(script.gameObject, noseTransform).GetComponent<WeaponScript>());
                 break;
             case HardPoint.Wings:
-                weapons.Add(Instantiate(weapon.gameObject, leftWingTransform).GetComponent<WeaponScript>());
-                weapons.Add(Instantiate(weapon.gameObject, rightWingTransform).GetComponent<WeaponScript>());
+                collection.Add(Instantiate(script.gameObject, leftWingTransform).GetComponent<WeaponScript>());
+                collection.Add(Instantiate(script.gameObject, rightWingTransform).GetComponent<WeaponScript>());
                 break;
             case HardPoint.Behind:
-                weapons.Add(Instantiate(weapon.gameObject, behindTransform).GetComponent<WeaponScript>());
+                collection.Add(Instantiate(script.gameObject, behindTransform).GetComponent<WeaponScript>());
                 break;
         }
     }
@@ -174,5 +194,14 @@ public class PlayerController : MonoBehaviour
             Destroy(weapon.gameObject);
         }
         weapons.Clear();
+    }
+
+    private void ClearPowerUp()
+    {
+        foreach (var weapon in powerUps)
+        {
+            Destroy(weapon.gameObject);
+        }
+        powerUps.Clear();
     }
 }

@@ -5,9 +5,7 @@ using UnityEngine;
 public class PickUp : MonoBehaviour
 {
     public AudioClip sound;
-    public GameObject powerUp;
     public WeaponScript weapon;
-    private PlayerController player;
     
     // Start is called before the first frame update
     void Start()
@@ -25,14 +23,14 @@ public class PickUp : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Player"))
         {
-            print("PickUp picked up");
+            var player = other.gameObject.GetComponent<PlayerController>();
+            if (weapon.type == PickUpType.Power && player.powerUps.Count > 0) return;
             GameManager.Instance.PlaySound(sound);
-            player = other.gameObject.GetComponent<PlayerController>();
-            if(powerUp != null)
+            if(weapon.type == PickUpType.Power)
             {
-                player.SetPower(powerUp);
+                player.SetPower(weapon);
             }
-            if(weapon != null)
+            else
             {
                 player.SetWeapon(weapon);
             }
