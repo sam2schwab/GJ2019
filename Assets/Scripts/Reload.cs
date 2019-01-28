@@ -72,11 +72,11 @@ public class Reload : MonoBehaviour
     }
     public void UpdateAmmo(float ammoPercent)
     {
+        barDisplay = 1- ammoPercent;
         if (ammoPercent <= 0)
         {
-            barDisplay = 0;
+            UpdateWeaponSprite(noPowerUpSprite);
         }
-        barDisplay = 1- ammoPercent;
     }
 
     public void UpdateWeaponSprite(Sprite weaponSprite)
