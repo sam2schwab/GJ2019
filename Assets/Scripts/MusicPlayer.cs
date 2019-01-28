@@ -43,12 +43,17 @@ public class MusicPlayer : MonoBehaviour
             {
                 case "main":
                     _audioSource.clip = battleSong;
+                    PlayMusic();
                     break;
                 case "Start":
                     _audioSource.clip = mainMenuSong;
+                    PlayMusic();
+                    break;
+                case "IntroVideo":
+                    _audioSource.clip = null;
                     break;
             }
-            PlayMusic();
+            //PlayMusic();
         };
 
 

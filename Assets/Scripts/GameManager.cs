@@ -39,8 +39,7 @@ public class GameManager : MonoBehaviour
     public AudioClip playerCrashClip;
     public AudioClip enemyDeathClip;
     public AudioClip enemyHitClip;
-    private AudioSource audioSource;
-
+    public int wave;
 
     // Start is called before the first frame update
     private void Awake()
@@ -52,17 +51,6 @@ public class GameManager : MonoBehaviour
         RenderSettings.skybox = material;
         Instance = this;
         planets = FindObjectsOfType<PlanetController>().ToList();
-    }
-
-    void Start()
-    {
-        audioSource = GetComponent<AudioSource>();
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
     }
 
     public void DamageHome(int damage)
