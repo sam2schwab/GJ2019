@@ -8,6 +8,8 @@ public class PowerUpSpawner : MonoBehaviour
     private List<GameObject> _powerUps;
     
     public float intervalBetweenSpawns = 20f;
+    public int maxPowerups = 4;
+    private List<GameObject> onMap = new List<GameObject>();
     private float _nextSpawn;
     private float _maxZ;
     private float _maxX;
@@ -29,7 +31,9 @@ public class PowerUpSpawner : MonoBehaviour
     {
         if (Time.time > _nextSpawn)
         {
-            Spawn();
+            onMap = onMap.FindAll(go => go != null);
+            if (onMap.Count < maxPowerups)
+                Spawn();
             _nextSpawn += intervalBetweenSpawns;
         }
     }
@@ -46,7 +50,9 @@ public class PowerUpSpawner : MonoBehaviour
         } while (IntersectsPlanet(position));
 
         var pickup = _powerUps[rng.Next(_powerUps.Count)];
-        Instantiate(pickup, position, Quaternion.identity);
+        var item = Instantiate(pickup, position, Quaternion.identity);
+        item.transform.localScale *= 1.5f;
+        onMap.Add(item);
     }
 
     private bool IntersectsPlanet(Vector3 position)

@@ -81,16 +81,20 @@ public class PlayerController : MonoBehaviour
             _playerTransform.Translate(speed * Vector3.up * Time.deltaTime);
         }
 
+        var semiAuto = weapons.Count > 0 && weapons[0].semiAuto;
+
         //Shooting
-        if (CheckButton("Fire1"))
+        if (CheckButton("Fire1", semiAuto))
         {
             foreach (var weapon in weapons)
             {
                 weapon.Shoot();
             }
         }
+        
+        semiAuto = powerUps.Count > 0 && powerUps[0].semiAuto;
 
-        if (CheckButton("Fire2"))
+        if (CheckButton("Fire2", semiAuto))
         {
             if (powerUps.Count > 0)
             {

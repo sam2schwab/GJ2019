@@ -13,6 +13,7 @@ public class WeaponScript : MonoBehaviour
     public int maxAmmo = -1;
     public int ammo;
     public AudioClip shotSound;
+    public bool semiAuto;
 
     public PickUpType type;
 
