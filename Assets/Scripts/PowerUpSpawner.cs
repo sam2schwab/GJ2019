@@ -30,6 +30,7 @@ public class PowerUpSpawner : MonoBehaviour
         if (Time.time > _nextSpawn)
         {
             Spawn();
+            _nextSpawn += intervalBetweenSpawns;
         }
     }
 
