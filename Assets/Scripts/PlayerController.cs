@@ -20,13 +20,15 @@ public class PlayerController : MonoBehaviour
     private bool _isAnchored = true;
     private float _rotationSpeed;
 
+    //Visuals & sound
+    public AudioClip emptySound;
+    public GameObject explosion;
+
     //Shooting & Weaponry
     public List<WeaponScript> weapons;
     public List<WeaponScript> powerUps;
-    public GameObject powerUp;
     private BulletMover shotScript;
-
-    public GameObject explosion;
+    
 
     // Use this for initialization
     private void Start()
@@ -90,7 +92,7 @@ public class PlayerController : MonoBehaviour
 
         if (CheckButton("Fire2"))
         {
-            if(powerUps.Count > 0)
+            if (powerUps.Count > 0)
             {
                 foreach (var weapon in powerUps)
                 {
@@ -99,6 +101,8 @@ public class PlayerController : MonoBehaviour
 
                 if (powerUps[0].ammo == 0) ClearPowerUp();
             }
+            else if (CheckButton("Fire2", true))
+                GameManager.Instance.PlaySound(emptySound);
             
         }
     }
@@ -153,9 +157,9 @@ public class PlayerController : MonoBehaviour
 		_rotationSpeed = speed * 360 / perimeter;
 	}
 
-	private bool CheckButton(string button)
+	private bool CheckButton(string button, bool buttonDown = false)
     {
-	    return Input.GetButton(button) && !GameManager.Instance.isGameOver;
+	    return !GameManager.Instance.isGameOver && (buttonDown ? Input.GetButtonDown(button) : Input.GetButton(button));
     }
 
     //For PickUps
