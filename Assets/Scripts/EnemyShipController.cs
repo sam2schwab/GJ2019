@@ -53,8 +53,11 @@ public class EnemyShipController : MonoBehaviour
     {
         if (other.tag == "Bullets")
         {
-            int damage = other.gameObject.GetComponent<BulletMover>().damage;
-            Destroy(other.gameObject);
+            BulletMover bulletScript = other.gameObject.GetComponent<BulletMover>();
+            int damage = bulletScript.damage;
+            bool isDestroyed = bulletScript.isDestroyed;
+
+            if (isDestroyed) Destroy(other.gameObject);
             GameManager.Instance.EnemyHit();
             FlashRed();
 

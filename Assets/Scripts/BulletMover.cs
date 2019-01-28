@@ -10,6 +10,7 @@ public class BulletMover : MonoBehaviour
     public int damage=1;
     public float lifeTime = 3.0f;
     float birthTime;
+    public bool isDestroyed = true;
 
     Rigidbody rb;
 
