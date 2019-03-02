@@ -20,8 +20,8 @@ public class DefaultButton : MonoBehaviour
     {
         if (myEventSystem.currentSelectedGameObject==null)
         {
-            Debug.Log("is null");
             myEventSystem.SetSelectedGameObject(button);
+            
         }
     }
 }
