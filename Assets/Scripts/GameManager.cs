@@ -40,6 +40,9 @@ public class GameManager : MonoBehaviour
     public AudioClip enemyDeathClip;
     public AudioClip enemyHitClip;
     public int wave;
+    
+    //For LeaderboardManager
+    public LeaderboardManager leaderboardManager;
 
     // Start is called before the first frame update
     private void Awake()
