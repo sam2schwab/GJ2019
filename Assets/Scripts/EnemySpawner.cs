@@ -10,7 +10,7 @@ public class EnemySpawner : MonoBehaviour
     //waves
     public float waveDuration = 10;
     public float pauseDuration = 2f;
-    public float scalingFactor = 0.2f;
+    public float scalingFactor = 1.1f;
     private float _nextPause;
     private float _nextWave;
 
@@ -60,9 +60,9 @@ public class EnemySpawner : MonoBehaviour
         {
             GameManager.Instance.wave++;
             _nextWave += waveDuration + pauseDuration;
-            difficultyFactor *= scalingFactor;
-            _nextSpawn /= scalingFactor;
-            _nextCapitalSpawn /= scalingFactor;
+            difficultyFactor *= scalingFactor; 
+            _nextSpawn += (_nextSpawn - Time.time) / scalingFactor; 
+            _nextCapitalSpawn += (_nextCapitalSpawn - Time.time) / scalingFactor;
         }
 
         if (Time.time > _nextPause)
