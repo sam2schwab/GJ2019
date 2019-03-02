@@ -28,7 +28,7 @@ public class PlayerController : MonoBehaviour
     public List<WeaponScript> weapons;
     public List<WeaponScript> powerUps;
     private BulletMover shotScript;
-    
+
 
     // Use this for initialization
     private void Start()
@@ -37,12 +37,13 @@ public class PlayerController : MonoBehaviour
         _playerTransform = gameObject.transform;
         UpdateRotation();
     }
-	
-	// Update is called once per frame
-	private void Update () {
-		var axis = Input.GetAxis("Vertical");
+
+    // Update is called once per frame
+    private void Update()
+    {
+        var axis = Input.GetAxis("Vertical");
         float newSpeed;
-        if (axis<0)
+        if (axis < 0)
         {
             axis *= -1;
             newSpeed = baseSpeed - (baseSpeed - minSpeed) * axis;
@@ -68,16 +69,19 @@ public class PlayerController : MonoBehaviour
         //	UpdateRotationSpeed(radius);
         //}
         if (_isAnchored)
-        {
-	        if (CheckButton("Jump"))
-	        {
-		        _isAnchored = false;
-	        }
-	        _playerTransform.RotateAround(anchorTransform.position, _rotationAxis, _rotationSpeed * Time.deltaTime);
+        {   
+            if (CheckButton("Jump", true))
+            {
+                _isAnchored = false;
+            }
+            _playerTransform.RotateAround(anchorTransform.position, _rotationAxis, _rotationSpeed * Time.deltaTime);
         }
         else
         {
-	        TryToAnchor();
+            if (!CheckButton("Jump"))
+            {
+                TryToAnchor();
+            }
             _playerTransform.Translate(speed * Vector3.up * Time.deltaTime);
         }
 
@@ -91,7 +95,7 @@ public class PlayerController : MonoBehaviour
                 weapon.Shoot();
             }
         }
-        
+
         semiAuto = powerUps.Count > 0 && powerUps[0].semiAuto;
 
         if (CheckButton("Fire2", semiAuto))
@@ -107,63 +111,63 @@ public class PlayerController : MonoBehaviour
             }
             else if (CheckButton("Fire2", true))
                 GameManager.Instance.PlaySound(emptySound);
-            
+
         }
     }
 
     void OnTriggerEnter(Collider other)
     {
-        if(other.tag == "Planets")
+        if (other.tag == "Planets")
         {
             Destroy(gameObject);
             Instantiate(explosion, transform.position, transform.rotation);
             //GameManager.Instance.PlayerCrash();
             GameManager.Instance.isGameOver = true;
         }
-        
+
     }
 
     private void TryToAnchor()
-	{
-		foreach (var planet in GameManager.Instance.planets)
-		{
-			if (planet.transform == anchorTransform) continue;
-			var radius = _playerTransform.position - planet.gameObject.transform.position;
-			if (radius.magnitude < planet.GravityRadius && Vector3.Angle(_playerTransform.up, radius) - 90 < 1.5)
-			{
-				anchorTransform = planet.transform;
-				UpdateRotation();
-				_isAnchored = true;
-				return;
-			}
-		}
-	}
-
-	private void UpdateRotation()
-	{
-		//update rotation axis
-		var direction = _playerTransform.up;
-		var radius = _playerTransform.position - anchorTransform.position;
-		_rotationAxis = Vector3.Cross(radius, direction).y < 0 ? Vector3.down : Vector3.up;
-
-		UpdateRotationSpeed(radius);
-		
-		//update ship angle
-		var modifier = _rotationAxis.y < 0 ? -90 : 90; 
-		var angle = Vector3.SignedAngle(direction, radius, Vector3.up) + modifier;
-		_playerTransform.Rotate(Vector3.up, angle, Space.World);
-	}
-
-	private void UpdateRotationSpeed(Vector3 radius)
-	{
-//update rotation speed (deg/sec)
-		var perimeter = 2 * Mathf.PI * radius.magnitude;
-		_rotationSpeed = speed * 360 / perimeter;
-	}
-
-	private bool CheckButton(string button, bool buttonDown = false)
     {
-	    return !GameManager.Instance.isGameOver && (buttonDown ? Input.GetButtonDown(button) : Input.GetButton(button));
+        foreach (var planet in GameManager.Instance.planets)
+        {
+            if (planet.transform == anchorTransform) continue;
+            var radius = _playerTransform.position - planet.gameObject.transform.position;
+            if (radius.magnitude < planet.GravityRadius && Vector3.Angle(_playerTransform.up, radius) - 90 < 1.5)
+            {
+                anchorTransform = planet.transform;
+                UpdateRotation();
+                _isAnchored = true;
+                return;
+            }
+        }
+    }
+
+    private void UpdateRotation()
+    {
+        //update rotation axis
+        var direction = _playerTransform.up;
+        var radius = _playerTransform.position - anchorTransform.position;
+        _rotationAxis = Vector3.Cross(radius, direction).y < 0 ? Vector3.down : Vector3.up;
+
+        UpdateRotationSpeed(radius);
+
+        //update ship angle
+        var modifier = _rotationAxis.y < 0 ? -90 : 90;
+        var angle = Vector3.SignedAngle(direction, radius, Vector3.up) + modifier;
+        _playerTransform.Rotate(Vector3.up, angle, Space.World);
+    }
+
+    private void UpdateRotationSpeed(Vector3 radius)
+    {
+        //update rotation speed (deg/sec)
+        var perimeter = 2 * Mathf.PI * radius.magnitude;
+        _rotationSpeed = speed * 360 / perimeter;
+    }
+
+    private bool CheckButton(string button, bool buttonDown = false)
+    {
+        return Time.timeScale == 1 && !GameManager.Instance.isGameOver && (buttonDown ? Input.GetButtonDown(button) : Input.GetButton(button));
     }
 
     //For PickUps
