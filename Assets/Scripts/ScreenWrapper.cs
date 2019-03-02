@@ -54,7 +54,10 @@ public class ScreenWrapper : MonoBehaviour
 
         if (other.gameObject.CompareTag("Boundary"))
         {
-            Wrap();
+            if (!player.IsAnchored)
+            {
+                Wrap();
+            }
         }
     }
 

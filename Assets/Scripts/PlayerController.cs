@@ -17,7 +17,7 @@ public class PlayerController : MonoBehaviour
 
     private Vector3 _rotationAxis;
     private Transform _playerTransform;
-    private bool _isAnchored = true;
+    public bool IsAnchored = true; //privatiser le set, mais je ne sais pas comment faire.
     private float _rotationSpeed;
 
     //Visuals & sound
@@ -55,7 +55,7 @@ public class PlayerController : MonoBehaviour
         if (Mathf.Abs(speed - newSpeed) > 0.01f)
         {
             speed = newSpeed;
-            if (_isAnchored)
+            if (IsAnchored)
             {
                 var radius = _playerTransform.position - anchorTransform.position;
                 UpdateRotationSpeed(radius);
@@ -68,11 +68,11 @@ public class PlayerController : MonoBehaviour
         //	var radius = _playerTransform.position - anchorTransform.position;
         //	UpdateRotationSpeed(radius);
         //}
-        if (_isAnchored)
+        if (IsAnchored)
         {   
             if (CheckButton("Jump", true))
             {
-                _isAnchored = false;
+                IsAnchored = false;
             }
             _playerTransform.RotateAround(anchorTransform.position, _rotationAxis, _rotationSpeed * Time.deltaTime);
         }
@@ -137,7 +137,7 @@ public class PlayerController : MonoBehaviour
             {
                 anchorTransform = planet.transform;
                 UpdateRotation();
-                _isAnchored = true;
+                IsAnchored = true;
                 return;
             }
         }
