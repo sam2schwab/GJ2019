@@ -15,7 +15,7 @@ public class LeaderboardInterfaceManager : MonoBehaviour
     {
         lbManager = GetComponent<LeaderboardManager>();
         scoresLocal = await LeaderboardManager.Instance.GetBestScores(false);
-        scoresGlobal = await LeaderboardManager.Instance.GetBestScores(true);
+        scoresGlobal = await LeaderboardManager.Instance.GetBestScores(false);
         ShowLocal();
     }
 
@@ -28,7 +28,7 @@ public class LeaderboardInterfaceManager : MonoBehaviour
     {
         globalLeaderboard.SetActive(true);
         localLeaderboard.SetActive(false);
-        UpdatePositions(positionsLocal, scoresGlobal);
+        UpdatePositions(positionsGlobal, scoresGlobal);
     }
     public void ShowLocal()
     {
