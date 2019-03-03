@@ -33,9 +33,9 @@ public class LeaderboardManager : MonoBehaviour
             WriteToXmlFile(ScoresFileName, new List<int>(){200, 70, 23, 15});
     }
     
-    public async Task<List<Score>> GetBestScores(bool global = false)
+    public List<Score> GetBestScores(bool global = false)
     {
-        return global ? await _globalScores.Find(bson => true).SortByDescending(score => score.Value).Limit(10).ToListAsync() : _localBestScores;
+        return global ? new List<Score>() : _localBestScores;
     }
 
     public async Task<int> GetPosition(int score, bool global)
@@ -50,7 +50,8 @@ public class LeaderboardManager : MonoBehaviour
 
     private async Task<int> GetGlobalPosition(int score)
     {
-        return (int) (await _globalScores.Find(x => x.Value > score).CountDocumentsAsync() + 1);
+        return 1;
+        //return (int) (await _globalScores.Find(x => x.Value > score).CountDocumentsAsync() + 1);
     }
     
     public void SaveScore(Score score)
