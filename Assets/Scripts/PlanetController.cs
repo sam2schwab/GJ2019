@@ -17,6 +17,12 @@ public class PlanetController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        if (GameManager.Instance.smallAsteroids)
+        {
+            Size *= 0.5f;
+            radiusMultiplier *= 2f;
+        }
+
         GravityRadius = Size * radiusMultiplier / 2;
         var radius = radiusMultiplier * 0.135f;
         gameObject.GetComponentInChildren<SpriteRenderer>().gameObject.transform.localScale = new Vector3(radius,radius,radius);

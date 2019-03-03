@@ -121,8 +121,7 @@ public class PlayerController : MonoBehaviour
         {
             Destroy(gameObject);
             Instantiate(explosion, transform.position, transform.rotation);
-            //GameManager.Instance.PlayerCrash();
-            GameManager.Instance.isGameOver = true;
+            GameManager.Instance.PlayerDeath();
         }
 
     }
