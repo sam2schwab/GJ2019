@@ -2,11 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class DefeatManager : MonoBehaviour
 {
-    public GameObject defeatPopupGo;
-    public GameObject defaultButton;
+    public GameObject defeatPopupGo, highscorePopupGo;
+    public GameObject defaultButtonDefeat, defaultButtonHighscore;
+    public GameObject textScore, textRank;
+    public int highscoreThreshold = 10;
     bool isDefeated = false;
     EventSystem eventSystem;
 
@@ -14,6 +17,7 @@ public class DefeatManager : MonoBehaviour
     void Start()
     {
         eventSystem = GameObject.FindGameObjectWithTag("EventSystem").GetComponent<EventSystem>();
+        highscorePopupGo.SetActive(false);
         defeatPopupGo.SetActive(false);
     }
 
@@ -22,10 +26,21 @@ public class DefeatManager : MonoBehaviour
     {
         if (GameManager.Instance.isGameOver && !isDefeated)
         {
+            int myScore = GameManager.Instance.score;
             isDefeated = true;
             eventSystem.SetSelectedGameObject(null);
-            defeatPopupGo.SetActive(true);
-            eventSystem.SetSelectedGameObject(defaultButton);
+            if (true)//LeaderboardManager.Instance.GetLocalPosition(myScore) <= highscoreThreshold)
+            {
+                highscorePopupGo.SetActive(true);
+                eventSystem.SetSelectedGameObject(defaultButtonHighscore);
+            }
+            else
+            {
+                defeatPopupGo.SetActive(true);
+                eventSystem.SetSelectedGameObject(defaultButtonDefeat);
+            }
+            textScore.GetComponent<Text>().text = "Score: " + myScore;
+            //textRank.GetComponent<Text>().text = "Local Rank: " + LeaderboardManager.Instance.GetLocalPosition(myScore)+ ", Global Rank: " + LeaderboardManager.Instance.GetGlobalPosition(myScore);
         }
     }
 }

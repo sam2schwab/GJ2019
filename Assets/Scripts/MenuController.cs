@@ -43,4 +43,14 @@ public class MenuController : MonoBehaviour {
         SceneManager.LoadScene("IntroVideo", LoadSceneMode.Single);
         //GetComponent<AudioSource>().Play();
     }
+
+    public void Leaderboard()
+    {
+        SceneManager.LoadScene("Leaderboard", LoadSceneMode.Single);
+    }
+
+    public void Test()
+    {
+        //cycl
+    }
 }
