@@ -35,6 +35,7 @@ public class PauseManager : MonoBehaviour
 
     public void PauseGame()
     {
+        eventSystem.SetSelectedGameObject(null);
         pausePopupGo.SetActive(true);
         eventSystem.SetSelectedGameObject(defaultButton);
         isPaused = true;

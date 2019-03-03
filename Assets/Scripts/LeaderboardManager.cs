@@ -83,7 +83,7 @@ public class LeaderboardManager : MonoBehaviour
         if (GetLocalPosition(score.Value) < 10)
         {
             _localBestScores.Add(score);
-            _localBestScores = _localBestScores.OrderBy(s => s.Value).ToList();
+            _localBestScores = _localBestScores.OrderByDescending(s => s.Value).ToList();
             WriteToXmlFile(BestScoresFileName, _localBestScores);
         }
     }
