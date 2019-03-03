@@ -2,23 +2,40 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Xml.Serialization;
+using MongoDB.Driver;
 using UnityEngine;
 
 public class LeaderboardManager : MonoBehaviour
 {
-    private readonly List<Score> _globalBestScores;
+    public static LeaderboardManager Instance { get; set; }
+    
     private List<Score> _localBestScores;
     private readonly List<int> _localScores;
     private const string BestScoresFileName = "best_scores.xml";
     private const string ScoresFileName = "scores.xml";
+    private const string MongoConnectionString = "mongodb://app:2gA2qAtiS7daa2J@ds157895.mlab.com:57895/homeworld";
+    private IMongoCollection<Score> _globalScores; 
 
     public LeaderboardManager()
     {
         InitFiles();
         _localBestScores = ReadFromXmlFile<List<Score>>(BestScoresFileName);
         _localScores = ReadFromXmlFile<List<int>>(ScoresFileName);
-        _globalBestScores = new List<Score>(); //TODO
+        var client = new MongoClient(MongoConnectionString);
+        _globalScores = client.GetDatabase("homeworld").GetCollection<Score>("scores");
+    }
+    
+    private void Awake()
+    {
+        if (Instance != null)
+        {
+            Destroy(gameObject);
+            return;
+        }
+        Instance = this;
+        DontDestroyOnLoad(transform.gameObject);
     }
 
     private void InitFiles()
@@ -29,24 +46,24 @@ public class LeaderboardManager : MonoBehaviour
             WriteToXmlFile(ScoresFileName, new List<int>(){200, 70, 23, 15});
     }
     
-    public List<Score> GetBestScores(bool global = false)
+    public async Task<List<Score>> GetBestScores(bool global = false)
     {
-        return global ? _globalBestScores : _localBestScores;
+        return global ? await _globalScores.Find(bson => true).SortByDescending(x => x.Value).ToListAsync() : _localBestScores;
     }
 
-    public int GetPosition(int score, bool global)
+    public async Task<int> GetPosition(int score, bool global)
     {
-        return global ? GetGlobalPosition(score) : GetLocalPosition(score);
+        return global ? await GetGlobalPosition(score) : GetLocalPosition(score);
     }
 
     private int GetLocalPosition(int score)
     {
-        return _localScores.FindAll(x => x > score).Count;
+        return _localScores.FindAll(x => x > score).Count + 1;
     }
 
-    private int GetGlobalPosition(int score)
+    private async Task<int> GetGlobalPosition(int score)
     {
-        return 1;
+        return (int) (await _globalScores.Find(x => x.Value > score).CountDocumentsAsync() + 1);
     }
     
     public void SaveScore(Score score)
@@ -57,7 +74,7 @@ public class LeaderboardManager : MonoBehaviour
 
     private void SaveScoreGlobally(Score score)
     {
-        
+        _globalScores.InsertOneAsync(score);
     }
 
     private void SaveScoreLocally(Score score)

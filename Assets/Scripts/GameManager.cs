@@ -33,6 +33,9 @@ public class GameManager : MonoBehaviour
     public int homeHealth = 5;
     public bool isGameOver = false;
     public int score = 0;
+    public bool laserSight = false;
+    public bool smallAsteroids = false;
+    public bool manyLives = false;
 
     //For sound
     public AudioClip[] explosionClips;
