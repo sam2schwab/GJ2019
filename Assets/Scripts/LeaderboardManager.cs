@@ -9,6 +9,8 @@ using UnityEngine;
 
 public class LeaderboardManager : MonoBehaviour
 {
+    public static LeaderboardManager Instance { get; set; }
+    
     private List<Score> _localBestScores;
     private readonly List<int> _localScores;
     private const string BestScoresFileName = "best_scores.xml";
@@ -23,6 +25,17 @@ public class LeaderboardManager : MonoBehaviour
         _localScores = ReadFromXmlFile<List<int>>(ScoresFileName);
         var client = new MongoClient(MongoConnectionString);
         _globalScores = client.GetDatabase("homeworld").GetCollection<Score>("scores");
+    }
+    
+    private void Awake()
+    {
+        if (Instance != null)
+        {
+            Destroy(gameObject);
+            return;
+        }
+        Instance = this;
+        DontDestroyOnLoad(transform.gameObject);
     }
 
     private void InitFiles()
