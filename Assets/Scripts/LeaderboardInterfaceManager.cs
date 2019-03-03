@@ -8,13 +8,14 @@ public class LeaderboardInterfaceManager : MonoBehaviour
     [SerializeField] GameObject localLeaderboard, globalLeaderboard;
     [SerializeField] GameObject[] positionsLocal, positionsGlobal;
     LeaderboardManager lbManager;
-    List<Score> scoresLocal;
+    List<Score> scoresLocal, scoresGlobal;
 
     // Start is called before the first frame update
-    void Start()
+    async void Start()
     {
         lbManager = GetComponent<LeaderboardManager>();
-        scoresLocal = lbManager.GetBestScores(false);
+        scoresLocal = await LeaderboardManager.Instance.GetBestScores(false);
+        scoresGlobal = await LeaderboardManager.Instance.GetBestScores(true);
         ShowLocal();
     }
 
@@ -27,30 +28,39 @@ public class LeaderboardInterfaceManager : MonoBehaviour
     {
         globalLeaderboard.SetActive(true);
         localLeaderboard.SetActive(false);
+        UpdatePositions(positionsLocal, scoresGlobal);
     }
     public void ShowLocal()
     {
         localLeaderboard.SetActive(true);
-        //int testPosition = 5;
-        //string testName = "AAA";
-        //int testScore = 99999;
-        //foreach (var item in positionsLocal)
+        globalLeaderboard.SetActive(false);
+        UpdatePositions(positionsLocal, scoresLocal);
+        //for (int i = 0; i < positionsLocal.Length; i++)
         //{
-        //    int testPosition =  Random.Range(1,10);
-        //    string testName = "AAA";
-        //    int testScore = Random.Range(9999, 99999);
-        //    item.GetComponent<Text>().text = testPosition.ToString("D2")+ " - " + testName + " - " + testScore;
+        //    if (i < scoresLocal.Count)
+        //    {
+        //        Score score = scoresLocal[i];
+        //        positionsLocal[i].GetComponent<Text>().text = (i + 1).ToString("D2") + " - " + score.Name + " - " + score.Value;
+        //    }
+        //    else
+        //    {
+        //        positionsLocal[i].GetComponent<Text>().text = (i + 1).ToString("D2") + " - ??? - ???";
+        //    }
+        //}
+    }
 
-        for (int i = 0; i < positionsLocal.Length; i++)
+    void UpdatePositions(GameObject[] p, List<Score> s)
+    {
+        for (int i = 0; i < p.Length; i++)
         {
-            if (i < scoresLocal.Count)
+            if (i < s.Count)
             {
-                Score score = scoresLocal[i];
-                positionsLocal[i].GetComponent<Text>().text = (i + 1).ToString("D2") + " - " + score.Name + " - " + score.Value;
+                Score score = s[i];
+                p[i].GetComponent<Text>().text = (i + 1).ToString("D2") + " - " + score.Name + " - " + score.Value;
             }
             else
             {
-                positionsLocal[i].GetComponent<Text>().text = (i + 1).ToString("D2") + " - ??? - ???";
+                p[i].GetComponent<Text>().text = (i + 1).ToString("D2") + " - ??? - ???";
             }
         }
     }

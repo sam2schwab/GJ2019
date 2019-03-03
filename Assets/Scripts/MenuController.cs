@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class MenuController : MonoBehaviour {
 
+    [SerializeField] GameObject[] letters;
 	// Use this for initialization
 	void Start () {
 		
@@ -49,8 +51,30 @@ public class MenuController : MonoBehaviour {
         SceneManager.LoadScene("Leaderboard", LoadSceneMode.Single);
     }
 
-    public void Test()
+    public void RegisterScore()
     {
-        //cycl
+        LeaderboardManager.Instance.SaveScore(new Score(BuildName(), GameManager.Instance.score));
+        StartGame();
+    }
+
+    public void BackAndRegister()
+    {
+        LeaderboardManager.Instance.SaveScore(new Score(BuildName(), GameManager.Instance.score));
+        Back();
+    }
+
+    public void Options()
+    {
+
+    }
+
+    string BuildName()
+    {
+        string name = "";
+        foreach (var item in letters)
+        {
+            name = name + item.GetComponent<Text>().text;
+        }
+        return name;
     }
 }
