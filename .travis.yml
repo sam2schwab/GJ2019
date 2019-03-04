@@ -5,6 +5,5 @@ os: windows
 jobs:
   include:
     - stage: build
-      script: 
-        - echo "test"
-        - ./test.bat
+      install: installer/install.sh
+      script: installer/build.bat
