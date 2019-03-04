@@ -13,17 +13,12 @@ public class LeaderboardInterfaceManager : MonoBehaviour
     // Start is called before the first frame update
     async void Start()
     {
-        lbManager = GetComponent<LeaderboardManager>();
-        scoresLocal = await LeaderboardManager.Instance.GetBestScores(false);
-        scoresGlobal = await LeaderboardManager.Instance.GetBestScores(false);
+        lbManager = LeaderboardManager.Instance;
+        scoresLocal = await LeaderboardManager.Instance.GetBestScores();
+        scoresGlobal = await LeaderboardManager.Instance.GetBestScores(true);
         ShowLocal();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
     public void ShowGlobal()
     {
         globalLeaderboard.SetActive(true);
@@ -35,18 +30,6 @@ public class LeaderboardInterfaceManager : MonoBehaviour
         localLeaderboard.SetActive(true);
         globalLeaderboard.SetActive(false);
         UpdatePositions(positionsLocal, scoresLocal);
-        //for (int i = 0; i < positionsLocal.Length; i++)
-        //{
-        //    if (i < scoresLocal.Count)
-        //    {
-        //        Score score = scoresLocal[i];
-        //        positionsLocal[i].GetComponent<Text>().text = (i + 1).ToString("D2") + " - " + score.Name + " - " + score.Value;
-        //    }
-        //    else
-        //    {
-        //        positionsLocal[i].GetComponent<Text>().text = (i + 1).ToString("D2") + " - ??? - ???";
-        //    }
-        //}
     }
 
     void UpdatePositions(GameObject[] p, List<Score> s)

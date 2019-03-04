@@ -8,18 +8,19 @@ public class MenuController : MonoBehaviour {
 
     [SerializeField] GameObject[] letters;
 	// Use this for initialization
-	void Start () {
-		
+	void Start ()
+	{
+	    SetDefaultName();
 	}
-	
-	// Update is called once per frame
+
+    // Update is called once per frame
 	void Update () {
 		
 	}
 
     public void StartGame()
     {
-        SceneManager.LoadScene("main", LoadSceneMode.Single);
+        SceneLoader.LoadScene("main");
         //GetComponent<AudioSource>().Play();
     }
 
@@ -76,5 +77,14 @@ public class MenuController : MonoBehaviour {
             name = name + item.GetComponent<Text>().text;
         }
         return name;
+    }
+    
+    private void SetDefaultName()
+    {
+        string defaultName = LeaderboardManager.Instance.GetDefaultName();
+        for (int i = 0; i < letters.Length; i++)
+        {
+            letters[i].GetComponent<Text>().text = defaultName[i].ToString();
+        }
     }
 }

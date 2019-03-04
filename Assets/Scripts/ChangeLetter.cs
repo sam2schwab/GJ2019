@@ -24,7 +24,7 @@ public class ChangeLetter : MonoBehaviour
         var axis = Input.GetAxis("Vertical");
         if (isSelected)
         {
-            if (axis > 0.01 && !hasChangedRecently)
+            if (axis > 0.2 && !hasChangedRecently)
             {
                 charId++;
                 if (charId>'Z')
@@ -34,7 +34,7 @@ public class ChangeLetter : MonoBehaviour
                 childText.text = ((char)charId).ToString();
                 hasChangedRecently = true;
             }
-            else if (axis < -0.01 && !hasChangedRecently)
+            else if (axis < -0.2 && !hasChangedRecently)
             {
                 charId--;
                 if (charId < 'A')
@@ -44,7 +44,7 @@ public class ChangeLetter : MonoBehaviour
                 childText.text = ((char)charId).ToString();
                 hasChangedRecently = true;
             }
-            if (Mathf.Abs(axis) < 0.0001f)
+            if (Mathf.Abs(axis) < 0.2f)
             {
                 hasChangedRecently = false;
             }
