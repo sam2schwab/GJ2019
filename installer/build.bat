@@ -1,0 +1,1 @@
+"C:\Program Files\Unity\Editor\Unity.exe" -batchmode -quit -projectPath "C:\Users\Samuel\Documents\GitHub\homeworld" -executeMethod BuildPlayer.BuildForWindows64
