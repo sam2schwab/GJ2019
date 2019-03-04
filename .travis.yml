@@ -1,9 +1,0 @@
-language: shell
-
-os: windows
-
-jobs:
-  include:
-    - stage: build
-      install: installer/install.sh
-      script: installer/build.bat
