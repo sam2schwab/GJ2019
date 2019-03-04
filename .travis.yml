@@ -1,0 +1,10 @@
+language: shell
+
+os: windows
+
+jobs:
+  include:
+    - stage: build
+      script: 
+        - echo "test"
+        - ./test.bat
