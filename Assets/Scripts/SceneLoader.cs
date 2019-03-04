@@ -43,7 +43,13 @@ public class SceneLoader : SingletonMonoBehaviour<SceneLoader>
     }
 
     private static AsyncOperation _loadOperation;
-    
+
+    protected override void Awake()
+    {
+        base.Awake();
+        loadingScreen.SetActive(false);
+    }
+
     public static void LoadScene(string scene, bool allowActivation = true, bool showLoading = true)
     {
         _allowActivation = allowActivation;
@@ -70,7 +76,7 @@ public class SceneLoader : SingletonMonoBehaviour<SceneLoader>
         {
             float progress = Mathf.Clamp01(_loadOperation.progress / 0.9f);
             slider.value = progress;
-            progressText.text = $"{progress * 100f}%";
+            progressText.text = $"{(int)(progress * 100)}%";
 
             yield return null;
         }
