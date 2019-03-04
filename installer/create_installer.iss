@@ -38,8 +38,8 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 
 [Files]
 Source: "{#MyBuildDir}\Home World.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "{#MyBuildDir}\Home World_Data\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "{#MyBuildDir}\MonoBleedingEdge\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "{#MyBuildDir}\Home World_Data\*"; DestDir: "{app}\Home World_Data"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "{#MyBuildDir}\MonoBleedingEdge\*"; DestDir: "{app}\MonoBleedingEdge"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "{#MyBuildDir}\UnityCrashHandler64.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "{#MyBuildDir}\UnityPlayer.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "{#MyBuildDir}\WinPixEventRuntime.dll"; DestDir: "{app}"; Flags: ignoreversion
