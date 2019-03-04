@@ -1,6 +1,7 @@
 using System;
 using MongoDB.Bson;
 
+[Serializable]
 public class Score
 {
     public ObjectId Id { get; set; }
