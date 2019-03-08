@@ -42,7 +42,7 @@ public class MenuController : MonoBehaviour {
         //GetComponent<AudioSource>().Play();
     }
 
-    public void Resign() // Melchi test
+    public void Forfeit() // Melchi test
     {
         GameManager.Instance.isGameOver = true;
     }
