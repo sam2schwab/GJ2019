@@ -2,53 +2,50 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
 using MongoDB.Driver;
 using UnityEngine;
 
-public class LeaderboardManager : MonoBehaviour
+public class LeaderboardManager : SingletonMonoBehaviour<LeaderboardManager>
 {
-    public static LeaderboardManager Instance { get; set; }
-    
     private List<Score> _localBestScores;
-    private readonly List<int> _localScores;
-    private const string BestScoresFileName = "best_scores.xml";
-    private const string ScoresFileName = "scores.xml";
+    private List<int> _localScores;
+    private const string BestScoresFileName = "best_scores";
+    private const string ScoresFileName = "scores";
     private const string MongoConnectionString = "mongodb://app:2gA2qAtiS7daa2J@ds157895.mlab.com:57895/homeworld";
-    private IMongoCollection<Score> _globalScores; 
+    private IMongoCollection<Score> _globalScores;
 
-    public LeaderboardManager()
+    protected override void Awake()
     {
+        base.Awake();
         InitFiles();
-        _localBestScores = ReadFromXmlFile<List<Score>>(BestScoresFileName);
-        _localScores = ReadFromXmlFile<List<int>>(ScoresFileName);
+        _localBestScores = ReadFromFile<List<Score>>(BestScoresFileName);
+        _localScores = ReadFromFile<List<int>>(ScoresFileName);
         var client = new MongoClient(MongoConnectionString);
         _globalScores = client.GetDatabase("homeworld").GetCollection<Score>("scores");
     }
     
-    private void Awake()
+    private static void InitFiles()
     {
-        if (Instance != null)
-        {
-            Destroy(gameObject);
-            return;
-        }
-        Instance = this;
-        DontDestroyOnLoad(transform.gameObject);
-    }
-
-    private void InitFiles()
-    {
-        if (!File.Exists(BestScoresFileName))
-            WriteToXmlFile(BestScoresFileName, new List<Score>(){new Score("bob", 200)});
-        if (!File.Exists(ScoresFileName))
-            WriteToXmlFile(ScoresFileName, new List<int>(){200, 70, 23, 15});
+        if (!File.Exists(Path.Combine(Application.persistentDataPath, BestScoresFileName)))
+            WriteToFile(BestScoresFileName, new List<Score>());
+        if (!File.Exists(Path.Combine(Application.persistentDataPath, ScoresFileName)))
+            WriteToFile(ScoresFileName, new List<int>());
     }
     
     public async Task<List<Score>> GetBestScores(bool global = false)
     {
-        return global ? await _globalScores.Find(bson => true).SortByDescending(x => x.Value).ToListAsync() : _localBestScores;
+        return global ? await GetGlobalBestScores() : _localBestScores;
+    }
+
+    private async Task<List<Score>> GetGlobalBestScores()
+    {
+        return await _globalScores.Find(bson => true)
+            .SortByDescending(x => x.Value)
+            .ThenByDescending(x => x.DateTime)
+            .ToListAsync();
     }
 
     public async Task<int> GetPosition(int score, bool global)
@@ -65,6 +62,14 @@ public class LeaderboardManager : MonoBehaviour
     {
         return (int) (await _globalScores.Find(x => x.Value > score).CountDocumentsAsync() + 1);
     }
+
+    public void ResetLocalScores()
+    {
+        _localScores = new List<int>();
+        WriteToFile(ScoresFileName, _localScores);
+        _localBestScores = new List<Score>();
+        WriteToFile(BestScoresFileName, _localBestScores);
+    }
     
     public void SaveScore(Score score)
     {
@@ -80,60 +85,41 @@ public class LeaderboardManager : MonoBehaviour
     private void SaveScoreLocally(Score score)
     {
         _localScores.Add(score.Value);
+        WriteToFile(ScoresFileName, _localScores);
         if (GetLocalPosition(score.Value) < 10)
         {
             _localBestScores.Add(score);
-            _localBestScores = _localBestScores.OrderBy(s => s.Value).ToList();
-            WriteToXmlFile(BestScoresFileName, _localBestScores);
+            _localBestScores = _localBestScores.OrderByDescending(s => s.Value)
+                .ThenByDescending(s => s.DateTime)
+                .ToList();
+            WriteToFile(BestScoresFileName, _localBestScores);
         }
     }
 
-    /// <summary>
-    /// Writes the given object instance to an XML file.
-    /// <para>Only Public properties and variables will be written to the file. These can be any type though, even other classes.</para>
-    /// <para>If there are public properties/variables that you do not want written to the file, decorate them with the [XmlIgnore] attribute.</para>
-    /// <para>Object type must have a parameterless constructor.</para>
-    /// </summary>
-    /// <typeparam name="T">The type of object being written to the file.</typeparam>
-    /// <param name="filePath">The file path to write the object instance to.</param>
-    /// <param name="objectToWrite">The object instance to write to the file.</param>
-    /// <param name="append">If false the file will be overwritten if it already exists. If true the contents will be appended to the file.</param>
-    private static void WriteToXmlFile<T>(string filePath, T objectToWrite, bool append = false) where T : new()
+    private static void WriteToFile<T>(string fileName, T objectToWrite)
     {
-        TextWriter writer = null;
-        try
+        fileName = Path.Combine(Application.persistentDataPath, fileName);
+        BinaryFormatter binaryFormatter = new BinaryFormatter();
+
+        using (FileStream fileStream = File.Open (fileName, FileMode.OpenOrCreate))
         {
-            var serializer = new XmlSerializer(typeof(T));
-            writer = new StreamWriter(filePath, append);
-            serializer.Serialize(writer, objectToWrite);
-        }
-        finally
-        {
-            if (writer != null)
-                writer.Close();
+            binaryFormatter.Serialize (fileStream, objectToWrite);
         }
     }
 
-    /// <summary>
-    /// Reads an object instance from an XML file.
-    /// <para>Object type must have a parameterless constructor.</para>
-    /// </summary>
-    /// <typeparam name="T">The type of object to read from the file.</typeparam>
-    /// <param name="filePath">The file path to read the object instance from.</param>
-    /// <returns>Returns a new instance of the object read from the XML file.</returns>
-    private static T ReadFromXmlFile<T>(string filePath) where T : new()
+    private static T ReadFromFile<T>(string fileName)
     {
-        TextReader reader = null;
-        try
+        fileName = Path.Combine(Application.persistentDataPath, fileName);
+        BinaryFormatter binaryFormatter = new BinaryFormatter();
+
+        using (FileStream fileStream = File.Open (fileName, FileMode.Open))
         {
-            var serializer = new XmlSerializer(typeof(T));
-            reader = new StreamReader(filePath);
-            return (T)serializer.Deserialize(reader);
+            return (T) binaryFormatter.Deserialize (fileStream);
         }
-        finally
-        {
-            if (reader != null)
-                reader.Close();
-        }
+    }
+
+    public string GetDefaultName()
+    {
+        return _localBestScores.OrderByDescending(x => x.DateTime).First()?.Name ?? "AAA";
     }
 }

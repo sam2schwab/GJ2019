@@ -33,11 +33,22 @@ public class GameManager : MonoBehaviour
     public int homeHealth = 5;
     public bool isGameOver = false;
     public int score = 0;
-    public bool laserSight = false;
-    public bool smallAsteroids = false;
-    public bool manyLives = false;
 
-    //For sound
+    [Header("Laser Sight")]
+    public bool laserSight = false;
+
+    [Header("Small Asteroids")]
+    public bool smallAsteroids = false;
+
+    [Header ("Many Lives")]
+    public bool manyLives = false;
+    public int playerLives = 1;
+    public int howManyLives = 3;
+    public float deathTime = 15f;
+    public float remainingDeathTime = 15f;
+    public GameObject playerPrefab;
+
+    [Header("Sound Clips")]
     public AudioClip[] explosionClips;
     public AudioClip playerCrashClip;
     public AudioClip enemyDeathClip;
@@ -59,6 +70,14 @@ public class GameManager : MonoBehaviour
         planets = FindObjectsOfType<PlanetController>().ToList();
     }
 
+    private void Start()
+    {
+        if (manyLives)
+        {
+            playerLives = howManyLives;
+        }
+    }
+
     public void DamageHome(int damage)
     {
         homeHealth -= damage;
@@ -71,10 +90,37 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public void PlayerDeath()
+    {
+        playerLives--;
+
+        if (playerLives > 0)
+        {
+            StartCoroutine(RespawnPlayer());
+        }
+
+        else if (playerLives == 0)
+        {
+            isGameOver = true;
+        }
+    }
+
     public void AugmentScore(int gain)
     {
         score += gain;
         print("Score : " + score);
+    }
+
+    private IEnumerator RespawnPlayer()
+    {
+        for (remainingDeathTime = deathTime; remainingDeathTime>0; remainingDeathTime--)
+        {
+            yield return new WaitForSeconds(1f);
+        }
+
+        GameObject newPlayer = Instantiate(playerPrefab);
+        PlayerController newPlayerController = newPlayer.GetComponent<PlayerController>();
+        newPlayerController.anchorTransform = home.transform;
     }
 
     #region Sound clips

@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Video;
 using UnityEngine.SceneManagement;
@@ -19,18 +20,21 @@ public class IntroVideoManager : MonoBehaviour
             isDone = true;
             doneTime = Time.time;
         };
+        SceneLoader.LoadScene("Start", false, false);
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (isDone && Time.time >= (waitTime + doneTime)) 
+        if (isDone && Time.time >= (waitTime + doneTime))
         {
-            SceneManager.LoadScene("Start");
+            SceneLoader.AllowActivation = true;
+            SceneLoader.ShowLoading = true;
         }
         if (Input.GetButtonDown("Submit"))
         {
-            SceneManager.LoadScene("Start");
+            SceneLoader.ShowLoading = true;
+            SceneLoader.AllowActivation = true;
         }
     }
 
