@@ -29,7 +29,8 @@ public class GameManager : MonoBehaviour
     public static readonly System.Random Rng = new System.Random();
 
     public List<PlanetController> planets;
-    public GameObject home;
+    public List<PlanetController> asteroids;
+    public PlanetController home;
     public int homeHealth = 5;
     public bool isGameOver = false;
     public int score = 0;
@@ -68,6 +69,8 @@ public class GameManager : MonoBehaviour
         RenderSettings.skybox = material;
         Instance = this;
         planets = FindObjectsOfType<PlanetController>().ToList();
+        asteroids = new List<PlanetController>(planets);
+        asteroids.Remove(home);
     }
 
     private void Start()

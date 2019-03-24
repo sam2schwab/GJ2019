@@ -22,7 +22,7 @@ public class EnemyShipController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        home = GameManager.Instance.home;
+        home = GameManager.Instance.home.gameObject;
         target = home.transform.position;
         target.y = 8;
         transform.LookAt(target);
