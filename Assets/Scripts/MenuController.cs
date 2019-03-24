@@ -41,6 +41,12 @@ public class MenuController : MonoBehaviour {
         SceneManager.LoadScene("Start", LoadSceneMode.Single);
         //GetComponent<AudioSource>().Play();
     }
+
+    public void Forfeit() // Melchi test
+    {
+        GameManager.Instance.isGameOver = true;
+    }
+
     public void Intro()
     {
         SceneManager.LoadScene("IntroVideo", LoadSceneMode.Single);

@@ -43,6 +43,12 @@ public class PauseManager : MonoBehaviour
     }
     public void UnpauseGame()
     {
+        StartCoroutine(CrUnpauseGame());
+    }
+
+    public IEnumerator CrUnpauseGame()
+    {
+        yield return null;
         pausePopupGo.SetActive(false);
         isPaused = false;
         Time.timeScale = 1;

@@ -82,7 +82,7 @@ public class GameManager : MonoBehaviour
     {
         homeHealth -= damage;
         print("homeHealth = " + homeHealth);
-        if (homeHealth == 0)
+        if (homeHealth <= 0)
         {
             isGameOver = true;
             Debug.Log("Game Over");
@@ -99,7 +99,7 @@ public class GameManager : MonoBehaviour
             StartCoroutine(RespawnPlayer());
         }
 
-        else if (playerLives == 0)
+        else if (playerLives <= 0)
         {
             isGameOver = true;
         }
