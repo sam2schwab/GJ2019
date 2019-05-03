@@ -30,7 +30,7 @@ public class BulletMover : MonoBehaviour
         }
     }
 
-    void Disapear()
+    public void Disapear()
     {
         Destroy(gameObject);
     }

@@ -22,6 +22,7 @@ public class EnemyShipController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        Debug.Log("start : start");
         home = GameManager.Instance.home;
         target = home.transform.position;
         target.y = 8;
@@ -29,6 +30,7 @@ public class EnemyShipController : MonoBehaviour
 
         mat = GetComponentInChildren<MeshRenderer>().material;
         originalColor = mat.color;
+        Debug.Log("start : end");
     }
 
     // Update is called once per frame
