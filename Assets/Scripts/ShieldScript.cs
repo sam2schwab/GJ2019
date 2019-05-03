@@ -16,6 +16,7 @@ public class ShieldScript : MonoBehaviour
 
     LineRenderer line;
 
+    int mask = 1 << 9;
     
 
     void Start()
@@ -55,12 +56,10 @@ public class ShieldScript : MonoBehaviour
     void CheckForBullets()
     {
 
-        Collider[] hitColliders = Physics.OverlapSphere(transform.position, yradius); // the layer mask should look for projectiles
+        Collider[] hitColliders = Physics.OverlapSphere(transform.position, yradius, mask); // the layer mask should look for projectiles
 
         for (int i = 0;  i < hitColliders.Length; i++)
-        {
-            if (hitColliders[i].CompareTag("Bullets"))
-            {
+        {  
                 Transform bullet = hitColliders[i].transform;
                 Vector3 vecToHitPoint = bullet.position - transform.position;
 
@@ -80,7 +79,7 @@ public class ShieldScript : MonoBehaviour
                     hitColliders[i].SendMessage("Disapear");
                 }
 
-            }
+            
         }
     }
 }
