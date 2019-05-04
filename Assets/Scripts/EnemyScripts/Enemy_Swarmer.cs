@@ -1,16 +1,21 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class EnemyShipController : MonoBehaviour
+public class Enemy_Swarmer : MonoBehaviour
 {
-    public int life;
-    public int shield;
-    public float speed;
-    public int damage;
+    //private Enemy_SwarmSoul soul;
     private GameObject home;
     private Vector3 target;
-    public int scoreValue;
+
+    public int life;
+    public int shield;
+
+    public float strafeSpeed;
+    public float strafeDistance;
+    Vector3 start;
+    Vector3 right;
+    [Range(-1f, 1f)]
+    public float perc;
+    public float strafeLerpPos;
 
     //For flashing on hit
     public float flashTime = 0.1f;
@@ -22,28 +27,29 @@ public class EnemyShipController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        Debug.Log("start : start");
-        home = GameManager.Instance.home;
-        target = home.transform.position;
-        target.y = 8;
-        transform.LookAt(target);
-
         mat = GetComponentInChildren<MeshRenderer>().material;
         originalColor = mat.color;
-        Debug.Log("start : end");
+
+        //For movement
+        //home = GameManager.Instance.home;
+        //target = home.transform.position;
+        //transform.LookAt(target);
+        //target.y = 8;
+
+        //soul = GetComponentInParent<Enemy_SwarmSoul>();
+        strafeLerpPos = Random.Range(0f, 90f);
+        start = transform.localPosition;
+        right = new Vector3(strafeDistance, 0, 0) + start;
     }
 
     // Update is called once per frame
     void Update()
     {
-        transform.position = Vector3.MoveTowards(transform.position, target, speed * Time.deltaTime);
+        // Movement
+        strafeLerpPos += strafeSpeed * Time.deltaTime;
+        perc = Mathf.Sin(strafeLerpPos);
+        transform.localPosition = Vector3.LerpUnclamped(start, right, perc);
 
-        if (Vector3.Distance(transform.position, target) < 0.001f)
-        {
-            GameManager.Instance.Explosion(); //Play audio sound
-            GameManager.Instance.DamageHome(damage); 
-            GetWrecked();
-        }
     }
 
     private void GetWrecked()
@@ -100,7 +106,6 @@ public class EnemyShipController : MonoBehaviour
     private void Die()
     {
         //GameManager.Instance.Explosion();
-        GameManager.Instance.AugmentScore(scoreValue);
         Instantiate(explosion, transform.position, transform.rotation);
         Destroy(gameObject);
     }
