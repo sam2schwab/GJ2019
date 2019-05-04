@@ -11,12 +11,18 @@ public class Enemy_Swarmer1 : MonoBehaviour
 
     //public float strafeSpeed;
     //public float strafeDistance;
-    Vector3 nextTarget;
-    Vector3 lastTarget;
+    Vector3 targetA;
+    Vector3 targetB;
+    int targetInt;
+    bool justChangedTarget = false;
     [Range(0f, 1f)]
     public float perc;
     public float strafeLerpPos;
     public float strafeSpeed;
+
+    Quaternion quat;
+    float rotPerc;
+    public float rotSpeed;
 
     //For flashing on hit
     public float flashTime = 0.1f;
@@ -37,11 +43,14 @@ public class Enemy_Swarmer1 : MonoBehaviour
         //transform.LookAt(target);
         //target.y = 8;
 
-        //soul = GetComponentInParent<Enemy_SwarmSoul>();
+        soul = GetComponentInParent<Enemy_SwarmSoul>();
         strafeLerpPos = 0;
-        lastTarget = transform.localPosition;
-        int targetInt = Random.Range(0, 35);
-        nextTarget = soul.points[targetInt];
+        strafeSpeed += Random.Range(-30f, 30f);
+        targetA = transform.localPosition;
+        targetInt = Random.Range(0, soul.nbOfPoints-1);
+        targetB = soul.points[targetInt];
+        quat = new Quaternion();
+        quat = Quaternion.LookRotation(targetB - targetA);
     }
 
     // Update is called once per frame
@@ -49,10 +58,44 @@ public class Enemy_Swarmer1 : MonoBehaviour
     {
         // Movement
         strafeLerpPos += strafeSpeed * Time.deltaTime;
-        perc = Mathf.Sin(strafeLerpPos);
-        transform.localPosition = Vector3.LerpUnclamped(lastTarget, nextTarget, perc);
+        rotPerc += rotSpeed * Time.deltaTime;
+        perc = (Mathf.Sin(Mathf.Deg2Rad * strafeLerpPos)+1)/2;
+        transform.localPosition = Vector3.Lerp(targetA, targetB, perc);
+        transform.localRotation = Quaternion.Slerp(transform.localRotation, quat, rotPerc);
 
-       
+        if (perc > 0.45f && perc < 0.55f) justChangedTarget = false;
+
+        if (!justChangedTarget)
+        {
+            if (perc > 0.999f)
+            {
+                targetA = NewTarget(targetInt);
+                quat = Quaternion.LookRotation(targetA - targetB);
+                rotPerc = 0f;
+                justChangedTarget = true;
+                print("change target A. Target is " + targetInt);
+            }
+
+            if (perc < 0.001f)
+            {
+                targetB = NewTarget(targetInt);
+                quat = Quaternion.LookRotation(targetB - targetA);
+                rotPerc = 0f;
+                justChangedTarget = true;
+                print("change target B. Target is " + targetInt);
+            }
+        }
+
+
+
+    }
+
+    private Vector3 NewTarget(int tInt)
+    {
+        int min = soul.nbOfPoints / 4;
+        int max = min*3;
+        targetInt = (tInt + Random.Range(min, max)) % soul.nbOfPoints;
+        return soul.points[targetInt];
     }
 
     private void GetWrecked()
@@ -85,7 +128,7 @@ public class Enemy_Swarmer1 : MonoBehaviour
                     shield = 0;
                 }
             }
-  
+
             life -= damage;
 
             if (life < 1)
@@ -112,6 +155,6 @@ public class Enemy_Swarmer1 : MonoBehaviour
         Instantiate(explosion, transform.position, transform.rotation);
         Destroy(gameObject);
     }
-        
+
 
 }
