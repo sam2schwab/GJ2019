@@ -21,7 +21,8 @@ public class ScreenWrapper : MonoBehaviour
         upCl.tag = "Boundary";
         upCl.isTrigger = true;
         upCl.center = new Vector3(0, 0, upperRightCorner.z + buffer);
-        upCl.size = new Vector3((upperRightCorner.x + buffer) * 2, 1, 1);
+        upCl.size = new Vector3((upperRightCorner.x + buffer) * 2, 18, 1);
+        _upBoundary.AddComponent<DestroyBulletsIfHit>();
 
         GameObject _downBoundary = new GameObject("DownBoundary");
         _downBoundary.layer = 8;
@@ -29,7 +30,8 @@ public class ScreenWrapper : MonoBehaviour
         downCl.tag = "Boundary";
         downCl.isTrigger = true;
         downCl.center = new Vector3(0, 0, (upperRightCorner.z + buffer) * -1);
-        downCl.size = new Vector3((upperRightCorner.x + buffer) * 2, 1, 1);
+        downCl.size = new Vector3((upperRightCorner.x + buffer) * 2, 18, 1);
+        _downBoundary.AddComponent<DestroyBulletsIfHit>();
 
         GameObject _leftBoundary = new GameObject("LeftBoundary");
         _leftBoundary.layer = 8;
@@ -37,7 +39,8 @@ public class ScreenWrapper : MonoBehaviour
         leftCl.tag = "Boundary";
         leftCl.isTrigger = true;
         leftCl.center = new Vector3(upperRightCorner.x + buffer, 0, 0);
-        leftCl.size = new Vector3(1, 1, (upperRightCorner.z + buffer) * 2);
+        leftCl.size = new Vector3(1, 18, (upperRightCorner.z + buffer) * 2);
+        _leftBoundary.AddComponent<DestroyBulletsIfHit>();
 
         GameObject _rightBoundary = new GameObject("RightBoundary");
         _rightBoundary.layer = 8;
@@ -45,7 +48,8 @@ public class ScreenWrapper : MonoBehaviour
         rightCl.tag = "Boundary";
         rightCl.isTrigger = true;
         rightCl.center = new Vector3((upperRightCorner.x + buffer) * -1, 0, 0);
-        rightCl.size = new Vector3(1, 1, (upperRightCorner.z + buffer) * 2);
+        rightCl.size = new Vector3(1, 18, (upperRightCorner.z + buffer) * 2);
+        _rightBoundary.AddComponent<DestroyBulletsIfHit>();
 
     }
 
