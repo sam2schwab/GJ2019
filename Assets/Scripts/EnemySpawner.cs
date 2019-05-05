@@ -22,12 +22,11 @@ public class EnemySpawner : MonoBehaviour
     private float _maxZ;
     private float _maxX;
 
-
     // Start is called before the first frame update
     void Start()
     {
-        var worldPoint = GameManager.Instance.MainCamera.ViewportToWorldPoint(new Vector3(0f, 0f, 60f));
-        _spawnRadius = worldPoint.magnitude + 10f;
+        var worldPoint = GameManager.Instance.MainCamera.ViewportToWorldPoint(new Vector3(0f, 0f, GameManager.Instance.MainCamera.transform.position.y)); //Melchi : I corrected the z value to be fed automatically by the game, so if we change the camera it doesn't break.
+        _spawnRadius = worldPoint.magnitude + 2f; // Melchi : I corrected the radius so any value is only clamped on 1 axis at the time.  
         _maxX = -worldPoint.x + 2f;
         _maxZ = -worldPoint.z + 2f;
         var now = Time.time;
@@ -75,6 +74,7 @@ public class EnemySpawner : MonoBehaviour
 
     private void Spawn(SpawnType type)
     {
+
         var angle = GameManager.Rng.NextDouble() * 360;
         var position =  Quaternion.Euler(0, (float) angle, 0) * Vector3.left * _spawnRadius;
         position.x = Mathf.Clamp(position.x, -_maxX, _maxX);
