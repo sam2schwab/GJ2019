@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
+    //Local multiplayer
+    public int playerNumber;
+
     public Transform noseTransform;
     public Transform leftWingTransform;
     public Transform rightWingTransform;
@@ -41,7 +44,7 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     private void Update()
     {
-        var axis = Input.GetAxis("Vertical");
+        var axis = Input.GetAxis(playerNumber+"-Vertical");
         float newSpeed;
         if (axis < 0)
         {
@@ -70,7 +73,7 @@ public class PlayerController : MonoBehaviour
         //}
         if (_isAnchored)
         {   
-            if (CheckButton("Jump", true))
+            if (CheckButton(playerNumber + "-Jump", true))
             {
                 _isAnchored = false;
             }
@@ -78,7 +81,7 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
-            if (!CheckButton("Jump"))
+            if (!CheckButton(playerNumber + "-Jump"))
             {
                 TryToAnchor();
             }
@@ -88,7 +91,7 @@ public class PlayerController : MonoBehaviour
         var semiAuto = weapons.Count > 0 && weapons[0].semiAuto;
 
         //Shooting
-        if (CheckButton("Fire1", semiAuto))
+        if (CheckButton(playerNumber + "-Fire1", semiAuto))
         {
             foreach (var weapon in weapons)
             {
@@ -98,7 +101,7 @@ public class PlayerController : MonoBehaviour
 
         semiAuto = powerUps.Count > 0 && powerUps[0].semiAuto;
 
-        if (CheckButton("Fire2", semiAuto))
+        if (CheckButton(playerNumber + "-Fire2", semiAuto))
         {
             if (powerUps.Count > 0)
             {
@@ -109,7 +112,7 @@ public class PlayerController : MonoBehaviour
 
                 if (powerUps[0].ammo == 0) ClearPowerUp();
             }
-            else if (CheckButton("Fire2", true))
+            else if (CheckButton(playerNumber + "-Fire2", true))
                 GameManager.Instance.PlaySound(emptySound);
 
         }

@@ -1,16 +1,20 @@
 ﻿using System;
 using UnityEngine;
+using System.Collections.Generic;
 
 public class EnemySpawner : MonoBehaviour
 {
     public GameObject ship;
     public GameObject capitalShip;
     public float difficultyFactor = 1;
-    
+
     //waves
+    public bool lmsMode; //Last Man Standing : the next wave starts only when all enemies are dead.
+    private bool lmsCheck = true;
     public float waveDuration = 10;
     public float pauseDuration = 2f;
     public float scalingFactor = 1.1f;
+    [SerializeField]
     private float _nextPause;
     private float _nextWave;
 
@@ -39,6 +43,12 @@ public class EnemySpawner : MonoBehaviour
 
     // Update is called once per frame
     void Update()
+    {
+        if (lmsMode) lmsUpdate();
+        else normalUpdate();
+    }
+
+    private void normalUpdate()
     {
         UpdateDifficulty();
         if (Time.time > _nextSpawn)
@@ -72,7 +82,40 @@ public class EnemySpawner : MonoBehaviour
         }
     }
 
-    private void Spawn(SpawnType type)
+    private void lmsUpdate()
+    {
+        if (Time.time < _nextPause)
+        {
+            if (Time.time > _nextSpawn)
+            {
+                Spawn(SpawnType.Ship).SetParent(transform);
+                _nextSpawn += intervalBetweenShips / difficultyFactor;
+                lmsCheck = true;
+            }
+            if (Time.time > _nextCapitalSpawn)
+            {
+                Spawn(SpawnType.CapitalShip).SetParent(transform);
+                _nextCapitalSpawn += intervalBetweenCapitalShips / difficultyFactor;
+                lmsCheck = true;
+            }
+        }
+        else if (transform.childCount == 0 && lmsCheck)
+        {
+            lmsNextWave();
+            lmsCheck = false;
+        }
+    }
+
+    private void lmsNextWave()
+    {
+        GameManager.Instance.wave++;
+        difficultyFactor *= scalingFactor;
+        _nextSpawn = Time.time;
+        _nextCapitalSpawn = Time.time + intervalBetweenCapitalShips / difficultyFactor;
+        _nextPause = Time.time + waveDuration;
+    }
+
+    private Transform Spawn(SpawnType type)
     {
 
         var angle = GameManager.Rng.NextDouble() * 360;
@@ -80,16 +123,15 @@ public class EnemySpawner : MonoBehaviour
         position.x = Mathf.Clamp(position.x, -_maxX, _maxX);
         position.z = Mathf.Clamp(position.z, -_maxZ, _maxZ);
         position.y = 8;
+
         switch (type)
         {
             case SpawnType.Ship:
-                Instantiate(ship, position, Quaternion.identity);
-                break;
+                return Instantiate(ship, position, Quaternion.identity).transform;
             case SpawnType.CapitalShip:
-                Instantiate(capitalShip, position, Quaternion.identity);
-                break;
+                return Instantiate(capitalShip, position, Quaternion.identity).transform;
             case SpawnType.ShipCluster:
-                break;
+                return null;
             default:
                 throw new ArgumentOutOfRangeException("type", type, null);
         }

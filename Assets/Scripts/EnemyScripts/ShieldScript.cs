@@ -71,7 +71,6 @@ public class ShieldScript : MonoBehaviour
                 float z = Mathf.Cos(Mathf.Deg2Rad * angle) * yradius;
                 Vector3 vect = new Vector3(x, 0, z);
                 bool magCheck = vecToHitPoint.magnitude < vect.magnitude + 0.4 && vecToHitPoint.magnitude > vect.magnitude - 0.4;
-                Debug.LogFormat("VecToHitPoint.Magnitude = {0}, vect.mag = {1}, magCheck = {2}, angle = {3}", vecToHitPoint.magnitude, vect.magnitude, magCheck, angle);
 
                 // si le projectile frappe le bouclier, détruire le projectile
                 if (angle <= shieldAngle / 2 && magCheck)
